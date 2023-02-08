@@ -5,14 +5,14 @@ const cors = require("cors");
 const csurf = require("csurf");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
+const { ValidationError } = require("sequelize"); // might need to go on line 51
 
+const routes = require("./routes");
 const { environment } = require("./config");
 const isProduction = environment === "production";
 
 const app = express();
-
 app.use(morgan("dev"));
-
 app.use(cookieParser());
 app.use(express.json());
 
@@ -21,14 +21,12 @@ if (!isProduction) {
   // enable cors only in development
   app.use(cors());
 }
-
 // helmet helps set a variety of headers to better secure your app
 app.use(
   helmet.crossOriginResourcePolicy({
     policy: "cross-origin",
   })
 );
-
 // Set the _csrf token and create req.csrfToken method
 app.use(
   csurf({
@@ -40,9 +38,8 @@ app.use(
   })
 );
 
-const routes = require("./routes");
+app.use(routes);
 
-// ...
 // Catch unhandled requests and forward to error handler.
 app.use((_req, _res, next) => {
   const err = new Error("The requested resource couldn't be found.");
@@ -51,10 +48,6 @@ app.use((_req, _res, next) => {
   err.status = 404;
   next(err);
 });
-// ...
-const { ValidationError } = require("sequelize");
-
-// ...
 
 // Process sequelize errors
 app.use((err, _req, _res, next) => {
@@ -65,8 +58,8 @@ app.use((err, _req, _res, next) => {
   }
   next(err);
 });
-//...
-//Error formatter
+
+// Error formatter (actually sends the error)
 app.use((err, _req, res, _next) => {
   res.status(err.status || 500);
   console.error(err);
@@ -77,6 +70,5 @@ app.use((err, _req, res, _next) => {
     stack: isProduction ? null : err.stack,
   });
 });
-app.use(routes); // Connect all the routes
 
 module.exports = app;
