@@ -23,10 +23,12 @@ module.exports = {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        spotId: {
+        startDate: {
+          allowNull: false,
           type: Sequelize.DATE,
         },
-        userId: {
+        endDate: {
+          allowNull: false,
           type: Sequelize.DATE,
         },
         createdAt: {
