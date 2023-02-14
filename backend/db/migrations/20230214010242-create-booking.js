@@ -23,14 +23,11 @@ module.exports = {
           type: Sequelize.INTEGER,
           allowNull: false,
         },
-        review: {
-          type: Sequelize.STRING,
+        spotId: {
+          type: Sequelize.DATE,
         },
-        stars: {
-          type: Sequelize.INTEGER,
-          validate: {
-            max: 5,
-          },
+        userId: {
+          type: Sequelize.DATE,
         },
         createdAt: {
           allowNull: false,
