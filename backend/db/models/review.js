@@ -9,12 +9,34 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Review.belongsTo(models.Spots, {
+        foreignKey: "spotId",
+      });
+      Review.belongsTo(models.Users, {
+        foreignKey: "userId",
+      });
+      Review.hasMany(models.ReviewImages, {
+        foreignKey: "reviewId",
+        hooks: true,
+      });
     }
   }
   Review.init(
     {
-      review: DataTypes.STRING,
-      stars: DataTypes.INTEGER,
+      review: {
+        type: DataTypes.STRING,
+      },
+      stars: {
+        type: DataTypes.INTEGER,
+      },
+      spotId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
     },
     {
       sequelize,

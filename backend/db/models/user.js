@@ -13,6 +13,18 @@ module.exports = (sequelize, DataTypes) => {
     }
     static associate(models) {
       // define association here
+      User.hasMany(models.Spots, {
+        foreignKey: "ownerId",
+        hooks: true,
+      });
+      User.hasMany(models.Bookings, {
+        foreignKey: "userId",
+        hooks: true,
+      });
+      User.hasMany(models.Reviews, {
+        foreignKey: "userId",
+        hooks: true,
+      });
     }
     static getCurrentUserById(id) {
       return User.scope("currentUser").findByPk(id);
