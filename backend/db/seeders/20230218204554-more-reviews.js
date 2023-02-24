@@ -7,27 +7,27 @@ if (process.env.NODE_ENV === "production") {
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    options.tableName = "Bookings";
+    options.tableName = "Reviews";
     return queryInterface.bulkInsert(
       options,
       [
         {
-          spotId: 1,
-          userId: 1,
-          startDate: new Date(2023, 5, 17),
-          endDate: new Date(2023, 5, 25),
-        },
-        {
-          spotId: 2,
-          userId: 2,
-          startDate: new Date(2024, 10, 2),
-          endDate: new Date(2024, 10, 20),
-        },
-        {
+          review: "Great place",
+          stars: 4,
           spotId: 3,
+          userId: 1,
+        },
+        {
+          review: "Terrible, won't visit again",
+          stars: 1,
+          spotId: 1,
+          userId: 2,
+        },
+        {
+          review: "Loved it, will come again",
+          stars: 5,
+          spotId: 2,
           userId: 3,
-          startDate: new Date(2023, 10, 2),
-          endDate: new Date(2023, 10, 8),
         },
       ],
       {}
@@ -35,7 +35,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    options.tableName = "Bookings";
+    options.tableName = "Reviews";
     return queryInterface.bulkDelete(options, null, {});
   },
 };

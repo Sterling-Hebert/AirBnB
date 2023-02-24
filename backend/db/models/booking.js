@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Booking.belongsTo(models.User, {
         foreignKey: "userId",
+        onDelete: "CASCADE",
       });
     }
   }
@@ -39,11 +40,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "Booking",
-      defaultScope: {
-        attributes: {
-          exclude: ["createdAt", "updatedAt"],
-        },
-      },
     }
   );
   return Booking;
