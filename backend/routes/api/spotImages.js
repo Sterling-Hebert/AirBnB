@@ -21,14 +21,18 @@ router.delete("/:id", requireAuth, async (req, res) => {
   const deletedImage = await SpotImage.findByPk(req.params.id, {
     where: { spotId: req.user.id },
   });
+
   if (!deletedImage) {
     return res.json({
       message: "Spot Image couldn't be found",
       statusCode: 404,
     });
   }
+  const user = await Spot.findByPk(deletedImage.dataValues.spotId, {
+    attributes: ["ownerId"],
+  });
 
-  if (deletedImage.spotId !== req.user.id) {
+  if (user.ownerId !== req.user.id) {
     res.status(401);
     res.json({
       message:
