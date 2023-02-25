@@ -23,7 +23,7 @@ router.delete("/:id", requireAuth, async (req, res) => {
   });
   if (!deletedImage) {
     return res.json({
-      message: "Image could not be found (invalid id)",
+      message: "Spot Image couldn't be found",
       statusCode: 404,
     });
   }
@@ -38,7 +38,7 @@ router.delete("/:id", requireAuth, async (req, res) => {
   } else {
     await deletedImage.destroy();
     res.status(200).json({
-      message: "Image successfully deleted",
+      message: "Successfully deleted",
       statusCode: 200,
     });
   }

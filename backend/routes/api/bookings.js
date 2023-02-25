@@ -14,6 +14,8 @@ const {
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 const { json } = require("sequelize");
+const sequelize = require("sequelize");
+const { Op } = require("sequelize");
 
 const router = express.Router();
 
@@ -53,18 +55,35 @@ router.get("/current", requireAuth, async (req, res, next) => {
     }
   }
 
+  if (!bookings.length) {
+    res.status(404);
+    return res.json({
+      message: "Booking couldnt be found",
+      statusCode: 404,
+    });
+  }
+
   res.json({ Bookings: bookings });
 });
 
 //edit a booking
 
 router.put("/:bookingId", requireAuth, async (req, res, next) => {
+  const { startDate, endDate } = req.body;
   const booking = await Booking.findByPk(req.params.bookingId);
   if (!booking) {
     res.status(404);
     res.json({
       message: "Booking couldn't be found",
       statusCode: 404,
+    });
+  }
+  let today = new Date();
+  if (booking.endDate < today) {
+    res.status(403);
+    return res.json({
+      message: "Past bookings can't be modified",
+      statusCode: 403,
     });
   }
 
@@ -76,12 +95,48 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
       statusCode: 401,
     });
   } else {
-    const { startDate, endDate } = req.body;
     if (startDate >= endDate) {
       return res.json({
         message: "Validation error",
         statusCode: 400,
-        errors: ["Booking's end date cannot be before or on start date"],
+        errors: ["endDate cannot come before startDate"],
+      });
+    }
+    const spotId = booking.dataValues.id;
+    const existingBookings = await Booking.findAll({
+      attributes: [
+        [sequelize.fn("date", sequelize.col("startDate")), "startDate"],
+        [sequelize.fn("date", sequelize.col("endDate")), "endDate"],
+      ],
+      where: {
+        spotId,
+        [Op.or]: [
+          { startDate: { [Op.between]: [startDate, endDate] } },
+          { endDate: { [Op.between]: [startDate, endDate] } },
+          {
+            startDate: { [Op.lte]: startDate },
+            endDate: { [Op.gte]: endDate },
+          },
+        ],
+      },
+    });
+    if (existingBookings.length) {
+      return res.status(403).json({
+        message: "Sorry, this spot is already booked for the specified dates",
+        statusCode: 403,
+        errors: [
+          "Start date conflicts with an existing booking",
+          "End date conflicts with an existing booking",
+        ],
+      });
+    }
+
+    let today = new Date();
+    if (booking.endDate < today) {
+      res.status(403);
+      return res.json({
+        message: "Past bookings can't be modified",
+        statusCode: 403,
       });
     }
 
@@ -113,8 +168,9 @@ router.delete("/:id", requireAuth, async (req, res) => {
     });
   }
 
-  let startDate = Booking.startDate;
-  if (startDate) {
+  let today = new Date();
+  let startDate = deletedbooking.startDate;
+  if (startDate < today) {
     return res.json({
       massage: "Bookings that have begun can not be deleted",
       statusCode: 403,
@@ -123,7 +179,7 @@ router.delete("/:id", requireAuth, async (req, res) => {
 
   await deletedbooking.destroy();
   res.status(200).json({
-    message: "Booking successfully deleted",
+    message: "Successfully deleted",
     statusCode: 200,
   });
 });

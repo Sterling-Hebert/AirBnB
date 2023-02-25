@@ -21,7 +21,7 @@ router.delete("/:id", requireAuth, async (req, res) => {
   const deletedReviewImage = await ReviewImage.findByPk(req.params.id);
   if (!deletedReviewImage) {
     return res.json({
-      message: "Image could not be found (invalid id)",
+      message: "Review Image couldn't be found",
       statusCode: 404,
     });
   }
@@ -33,14 +33,13 @@ router.delete("/:id", requireAuth, async (req, res) => {
   if (review.userId !== req.user.id) {
     res.status(401);
     res.json({
-      message:
-        "Operation failed. Must be owner of the booking in order to edit",
+      message: "Must be owner of the booking in order to edit",
       statusCode: 401,
     });
   } else {
     await deletedReviewImage.destroy();
     res.status(200).json({
-      message: "Image successfully deleted",
+      message: "Successfully deleted",
       statusCode: 200,
     });
   }

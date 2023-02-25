@@ -14,6 +14,7 @@ const { requireAuth } = require("../../utils/auth");
 const { handleValidationErrors } = require("../../utils/validation");
 const { Op } = require("sequelize");
 const { ResultWithContext } = require("express-validator/src/chain");
+const { check } = require("express-validator");
 const router = express.Router();
 
 //Get all Reviews of the Current User
@@ -61,44 +62,56 @@ router.get("/current", requireAuth, async (req, res, next) => {
 //add an image to a review based on reviewid
 
 router.post("/:id/images", requireAuth, async (req, res) => {
-  const { url } = req.body;
   const findReview = await Review.findByPk(req.params.id);
   if (!findReview) {
     return res
       .status(404)
-      .json({ message: "Review couldnt be found", statusCode: 404 });
+      .json({ message: "Review couldn't be found", statusCode: 404 });
   }
   if (findReview.userId !== req.user.id) {
     return res
       .status(403)
       .json({ message: "Must be owner of review to post", statusCode: 404 });
   }
-  const imageReview = await ReviewImage.findAll({
+  const amountOfImages = await ReviewImage.findAll({
     where: {
       reviewId: findReview.id,
     },
   });
-  if (imageReview.length >= 10) {
+  if (amountOfImages.length >= 10) {
     return res.status(403).json({
       message: "Maximum number of image for this resource was reached",
       statusCode: 403,
     });
   } else {
-    const image = await ReviewImage.create({
+    const newImage = await ReviewImage.create({
       reviewId: findReview.id,
-      url: url,
+      url: req.body.url,
     });
-    const obj = {
-      id: image.id,
-      url: image.url,
+    const postImage = {
+      id: newImage.id,
+      url: newImage.url,
     };
-    res.json(obj);
+    res.json(postImage);
   }
 });
 
 //edit review
 
-router.put("/:id", requireAuth, async (req, res) => {
+const reviewValidation = [
+  check("review")
+    .exists({ checkFalsy: true })
+    .notEmpty()
+    .withMessage("Review in text is required"),
+  check("stars")
+    .exists({ checkFalsy: true })
+    .notEmpty()
+    .isInt({ min: 1, max: 5 })
+    .withMessage("Stars must be an integer from 1 to 5"),
+  handleValidationErrors,
+];
+
+router.put("/:id", reviewValidation, requireAuth, async (req, res) => {
   const { review, stars } = req.body;
   let updateReview = await Review.findByPk(req.params.id);
   if (!updateReview) {
