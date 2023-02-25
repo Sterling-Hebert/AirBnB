@@ -135,7 +135,12 @@ router.get("/:spotId", async (req, res) => {
     return res.json(errorSpot);
   }
   const foundSpotValid = await Spot.scope(["allDetails"]).findByPk(
-    req.params.spotId
+    req.params.spotId,
+    {
+      attributes: {
+        group: ["Spot.Id"],
+      },
+    }
   );
 
   res.json(foundSpotValid);
