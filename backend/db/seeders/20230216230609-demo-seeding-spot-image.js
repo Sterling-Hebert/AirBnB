@@ -16,16 +16,22 @@ module.exports = {
           spotId: 1,
           url: "image url",
           preview: true,
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         {
           spotId: 2,
           url: "image url",
           preview: true,
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         {
           spotId: 3,
           url: "image url",
           preview: true,
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
       ],
       {}
