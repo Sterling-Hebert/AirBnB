@@ -367,6 +367,12 @@ const reviewValidation = [
 ];
 
 router.post("/:id/reviews", reviewValidation, requireAuth, async (req, res) => {
+  let findspot = await Spot.findByPk(req.params.id, {
+    include: { model: Review },
+  });
+  if (!findspot) {
+    res.status(404).json({ message: "Spot couldnt be found", statusCode: 404 });
+  }
   const checkforReview = await Review.findOne({
     where: { userId: req.user.id },
   });
@@ -375,12 +381,6 @@ router.post("/:id/reviews", reviewValidation, requireAuth, async (req, res) => {
       message: "User already has a review for this spot",
       statusCode: 403,
     });
-  }
-  let findspot = await Spot.findByPk(req.params.id, {
-    include: { model: Review },
-  });
-  if (!findspot) {
-    res.status(404).json({ message: "Spot couldnt be found", statusCode: 404 });
   }
   let newReview = await Review.create({
     userId: req.user.id,
