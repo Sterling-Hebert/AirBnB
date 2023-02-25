@@ -19,15 +19,90 @@ const { Op } = require("sequelize");
 
 const router = express.Router();
 
-// finding all spots
-router.get("/", async (req, res, next) => {
-  let allSpots = [];
+const queryValueCheck = [
+  check("page")
+    .if(check("page").exists())
+    .isInt({ min: 1 })
+    .withMessage("Page must be greater than or equal to 1"),
+  check("size")
+    .if(check("size").exists())
+    .isInt({ min: 1 })
+    .withMessage("Size must be greater than or equal to 1"),
+  check("maxLat")
+    .if(check("maxLat").exists())
+    .isFloat({ min: -90, max: 90 })
+    .withMessage("Maximum latitude is invalid"),
+  check("minLat")
+    .if(check("minLat").exists())
+    .isFloat({ min: -90, max: 90 })
+    .withMessage("Minimum latiude is invalid"),
+  check("maxLng")
+    .if(check("maxLat").exists())
+    .isFloat({ min: -180, max: 180 })
+    .withMessage("Maximum longitude is invalid"),
+  check("minLng")
+    .if(check("minLng").exists())
+    .isFloat({ min: -180, max: 180 })
+    .withMessage("Mininum longitude is invalid"),
+  check("maxPrice")
+    .if(check("maxPrice").exists())
+    .isFloat({ min: 0 })
+    .withMessage("Minimum price must be greater than or equal to 0"),
+  handleValidationErrors,
+];
 
-  allSpots = await Spot.findAll({
-    group: ["Spot.id"],
-  });
-  if (allSpots) {
-    return res.json(allSpots);
+// finding all spots
+// router.get("/", queryValueCheck, async (req, res, next) => {
+//   // query params
+//   let { page, size, maxLat, minLat, maxLng, minLng, minPrice, maxPrice } =
+//     req.query;
+//   if (Number.isNaN(page) || page < 0) page = 1;
+//   if (Number.isNaN(size) || size > 20) size = 20;
+
+//   let allSpots = [];
+//   allSpots = await Spot.scope(["allDetails"]).findAll({
+//     // where,
+//     // limit: size,
+//     // offset: size * (page - 1),
+//   });
+//   if (allSpots) {
+//     return res.json(allSpots);
+//   }
+// });
+router.get("/", queryValueCheck, async (req, res, next) => {
+  const page = req.query.page;
+  const size = req.query.size;
+  let limit = size || 5;
+  let offset = limit * (page - 1) || 0;
+
+  let body = {};
+  if (req.query.minLat) {
+    body.lat = { [Op.gte]: req.query.minLat };
+  }
+  if (req.query.maxLat) {
+    body.lat = { [Op.lte]: req.query.maxLat };
+  }
+  if (req.query.minLat && req.query.maxLat) {
+    body.price = { [Op.between]: [req.query.minLat, req.query.maxLat] };
+  }
+  if (req.query.minPrice) {
+    body.price = { [Op.gte]: req.query.minPrice };
+  }
+  if (req.query.maxPrice) {
+    body.price = { [Op.lte]: req.query.maxPrice };
+  }
+  if (req.query.minPrice && req.query.maxPrice) {
+    body.price = { [Op.between]: [req.query.minPrice, req.query.maxPrice] };
+  }
+  const spots = await Spot.scope(["queryParamsScope"]).findAll({});
+  if (!spots) {
+    return res.status(404).json({
+      message: "Request Denied",
+      statusCode: 404,
+    });
+  }
+  if (spots) {
+    return res.status(200).json({ Spots: spots, page, size });
   }
 });
 

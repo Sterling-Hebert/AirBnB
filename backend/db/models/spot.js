@@ -182,6 +182,61 @@ module.exports = (sequelize, DataTypes) => {
           ],
           group: [Spot.id],
         },
+        queryParamsScope: {
+          include: [
+            {
+              //gotta include the models in order for fn to recognize the columns
+              association: "Reviews",
+              required: false,
+              attributes: ["id", "review", "stars"],
+            },
+            {
+              association: "SpotImages",
+              required: false,
+              where: { preview: true },
+              attributes: ["id", "url", "preview"],
+            },
+          ],
+          attributes: [
+            "id",
+            "ownerId",
+            "address",
+            "city",
+            "state",
+            "country",
+            "lat",
+            "lng",
+            "name",
+            "description",
+            "price",
+            "createdAt",
+            "updatedAt",
+            [
+              sequelize.fn(
+                "COALESCE", //first non null value
+                sequelize.fn("COUNT", sequelize.col("Reviews.id")),
+                0
+              ),
+              "numReviews",
+            ],
+            [
+              sequelize.fn(
+                "COALESCE", //first non null value
+                sequelize.fn("AVG", sequelize.col("Reviews.stars")),
+                sequelize.literal("'No ratings'")
+              ),
+              "avgStarRating",
+            ],
+            [
+              sequelize.fn(
+                "COALESCE",
+                sequelize.col("SpotImages.url"),
+                sequelize.literal("'image preview unavailable'")
+              ),
+              "previewImage",
+            ],
+          ],
+        },
       },
     }
   );

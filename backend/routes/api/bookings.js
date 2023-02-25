@@ -121,14 +121,20 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
       },
     });
     if (existingBookings.length) {
-      return res.status(403).json({
+      let conflictTimeError = {
         message: "Sorry, this spot is already booked for the specified dates",
         statusCode: 403,
-        errors: [
-          "Start date conflicts with an existing booking",
-          "End date conflicts with an existing booking",
-        ],
-      });
+        errors: {},
+        // errors: [
+        //   "Start date conflicts with an existing booking",
+        //   "End date conflicts with an existing booking",
+        // ],
+      };
+      conflictTimeError.errors = {
+        startDate: "Start date conflicts with an existing booking",
+        endDate: "End date conflicts with an existing booking",
+      };
+      res.json({ conflictTimeError });
     }
 
     let today = new Date();
