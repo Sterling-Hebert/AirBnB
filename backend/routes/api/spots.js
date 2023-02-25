@@ -94,7 +94,11 @@ router.get("/", queryValueCheck, async (req, res, next) => {
   if (req.query.minPrice && req.query.maxPrice) {
     body.price = { [Op.between]: [req.query.minPrice, req.query.maxPrice] };
   }
-  const spots = await Spot.scope(["queryParamsScope"]).findAll({});
+  const spots = await Spot.scope(["queryParamsScope"]).findAll({
+    attributes: {
+      group: ["Spot.Id"],
+    },
+  });
   if (!spots) {
     return res.status(404).json({
       message: "Request Denied",
