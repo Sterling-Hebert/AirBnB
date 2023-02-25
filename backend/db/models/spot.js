@@ -222,16 +222,16 @@ module.exports = (sequelize, DataTypes) => {
             [
               sequelize.fn(
                 "COALESCE", //first non null value
-                sequelize.fn("AVG", sequelize.col("Reviews.stars")),
-                sequelize.literal("'No ratings'")
+                sequelize.fn("AVG", sequelize.col("Reviews.stars"))
+                // sequelize.literal("'No ratings'")
               ),
               "avgStarRating",
             ],
             [
               sequelize.fn(
                 "COALESCE",
-                sequelize.col("SpotImages.url"),
-                sequelize.literal("'image preview unavailable'")
+                sequelize.col("SpotImages.url")
+                // sequelize.literal("'image preview unavailable'")
               ),
               "previewImage",
             ],
