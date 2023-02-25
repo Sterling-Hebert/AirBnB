@@ -14,38 +14,56 @@ module.exports = {
         {
           reviewId: 1,
           url: "image url1",
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         {
           reviewId: 2,
           url: "image url2",
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         {
           reviewId: 3,
           url: "image url3",
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         {
           reviewId: 4,
           url: "image url",
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         {
           reviewId: 5,
           url: "image url",
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         {
           reviewId: 6,
           url: "image url",
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         {
           reviewId: 7,
           url: "image url",
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         {
           reviewId: 8,
           url: "image url",
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         {
           reviewId: 9,
           url: "image url",
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
       ],
       {}
