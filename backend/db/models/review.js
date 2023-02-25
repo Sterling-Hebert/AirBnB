@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Review.belongsTo(models.Spot, {
         foreignKey: "spotId",
+        onDelete: "CASCADE",
       });
       Review.belongsTo(models.User, {
         foreignKey: "userId",
@@ -43,7 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Review",
       defaultScope: {
         attributes: {
-          exclude: ["createdAt", "updatedAt"],
+          exclude: [],
         },
       },
     }
