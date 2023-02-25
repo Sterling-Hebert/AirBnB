@@ -30,19 +30,19 @@ const queryValueCheck = [
     .withMessage("Size must be greater than or equal to 1"),
   check("maxLat")
     .if(check("maxLat").exists())
-    .isFloat({ min: -90, max: 90 })
+    .isFloat({ min: -500, max: 500 })
     .withMessage("Maximum latitude is invalid"),
   check("minLat")
     .if(check("minLat").exists())
-    .isFloat({ min: -90, max: 90 })
+    .isFloat({ min: -500, max: 500 })
     .withMessage("Minimum latiude is invalid"),
   check("maxLng")
     .if(check("maxLat").exists())
-    .isFloat({ min: -180, max: 180 })
+    .isFloat({ min: -500, max: 500 })
     .withMessage("Maximum longitude is invalid"),
   check("minLng")
     .if(check("minLng").exists())
-    .isFloat({ min: -180, max: 180 })
+    .isFloat({ min: -500, max: 500 })
     .withMessage("Mininum longitude is invalid"),
   check("maxPrice")
     .if(check("maxPrice").exists())
@@ -134,10 +134,9 @@ router.get("/:spotId", async (req, res) => {
     };
     return res.json(errorSpot);
   }
-  const foundSpotValid = await Spot.scope([
-    "defaultScope",
-    "allDetails",
-  ]).findByPk(req.params.spotId);
+  const foundSpotValid = await Spot.scope(["allDetails"]).findByPk(
+    req.params.spotId
+  );
 
   res.json(foundSpotValid);
 });

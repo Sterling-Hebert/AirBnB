@@ -132,7 +132,7 @@ module.exports = (sequelize, DataTypes) => {
               sequelize.fn(
                 "COALESCE", //first non null value
                 sequelize.fn("AVG", sequelize.col("Reviews.stars")),
-                sequelize.literal("'No ratings'")
+                sequelize.literal("'0'")
               ),
               "avgStarRating",
             ],
