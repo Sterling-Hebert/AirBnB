@@ -1,5 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
+const { Sequelize } = require(".");
 module.exports = (sequelize, DataTypes) => {
   class Spot extends Model {
     /**
@@ -10,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Spot.belongsTo(models.User, {
+        as: "Owner",
         foreignKey: "ownerId",
       });
       Spot.hasMany(models.Booking, {
@@ -48,8 +50,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      lat: DataTypes.INTEGER,
-      lng: DataTypes.INTEGER,
+      lat: DataTypes.FLOAT,
+      lng: DataTypes.FLOAT,
       name: DataTypes.STRING,
       description: DataTypes.STRING,
       price: DataTypes.INTEGER,
@@ -58,8 +60,127 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Spot",
       defaultScope: {
-        attributes: {
-          exclude: ["createdAt", "updatedAt"],
+        include: [
+          // {
+          //   //gotta include the models in order for fn to recognize the columns
+          //   association: "Reviews",
+          //   required: false,
+          //   attributes: [],
+          // },
+        ],
+
+        attributes: [
+          "id",
+          "ownerId",
+          "address",
+          "city",
+          "state",
+          "country",
+          "lat",
+          "lng",
+          "name",
+          "description",
+          "price",
+          "createdAt",
+          "updatedAt",
+        ],
+      },
+      scopes: {
+        allDetails: {
+          include: [
+            {
+              //gotta include the models in order for fn to recognize the columns
+              association: "Reviews",
+              required: false,
+              attributes: ["id", "review", "stars"],
+            },
+            {
+              association: "SpotImages",
+              required: false,
+              where: { preview: true },
+              attributes: ["id", "url", "preview"],
+            },
+            {
+              association: "Owner",
+              required: false,
+              attributes: ["id", "firstName", "lastName"],
+            },
+          ],
+          attributes: [
+            "id",
+            "ownerId",
+            "address",
+            "city",
+            "state",
+            "country",
+            "lat",
+            "lng",
+            "name",
+            "description",
+            "price",
+            "createdAt",
+            "updatedAt",
+            [
+              sequelize.fn(
+                "COALESCE", //first non null value
+                sequelize.fn("COUNT", sequelize.col("Reviews.id")),
+                0
+              ),
+              "numReviews",
+            ],
+            [
+              sequelize.fn(
+                "COALESCE", //first non null value
+                sequelize.fn("AVG", sequelize.col("Reviews.stars")),
+                sequelize.literal("'No ratings'")
+              ),
+              "avgStarRating",
+            ],
+            [
+              sequelize.fn(
+                "COALESCE",
+                sequelize.col("SpotImages.url"),
+                sequelize.literal("'image preview unavailable'")
+              ),
+              "previewImage",
+            ],
+          ],
+        },
+        reviewCurrentUserScope: {
+          attributes: [
+            "id",
+            "ownerId",
+            "address",
+            "city",
+            "state",
+            "country",
+            "lat",
+            "lng",
+            "name",
+            "description",
+            "price",
+            "createdAt",
+            "updatedAt",
+          ],
+          group: [Spot.id],
+        },
+        bookingCurrentUserScope: {
+          attributes: [
+            "id",
+            "ownerId",
+            "address",
+            "city",
+            "state",
+            "country",
+            "lat",
+            "lng",
+            "name",
+            "description",
+            "price",
+            "createdAt",
+            "updatedAt",
+          ],
+          group: [Spot.id],
         },
       },
     }

@@ -20,6 +20,7 @@ module.exports = {
           references: {
             model: "Spots",
           },
+          onDelete: "CASCADE",
         },
         url: {
           type: Sequelize.STRING,
@@ -30,10 +31,12 @@ module.exports = {
         createdAt: {
           allowNull: false,
           type: Sequelize.DATE,
+          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
         updatedAt: {
           allowNull: false,
           type: Sequelize.DATE,
+          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
         },
       },
       options
