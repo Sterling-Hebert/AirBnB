@@ -72,32 +72,20 @@ const queryValueCheck = [
 router.get("/", queryValueCheck, async (req, res, next) => {
   const page = req.query.page;
   const size = req.query.size;
-  let limit = size || 5;
-  let offset = limit * (page - 1) || 0;
 
-  let body = {};
-  if (req.query.minLat) {
-    body.lat = { [Op.gte]: req.query.minLat };
+  if (!page || Number.isNaN(page) || page > 10) {
+    page = 1;
   }
-  if (req.query.maxLat) {
-    body.lat = { [Op.lte]: req.query.maxLat };
+  if (!size || Number.isNaN(size) || size > 20) {
+    size = 20;
   }
-  if (req.query.minLat && req.query.maxLat) {
-    body.price = { [Op.between]: [req.query.minLat, req.query.maxLat] };
-  }
-  if (req.query.minPrice) {
-    body.price = { [Op.gte]: req.query.minPrice };
-  }
-  if (req.query.maxPrice) {
-    body.price = { [Op.lte]: req.query.maxPrice };
-  }
-  if (req.query.minPrice && req.query.maxPrice) {
-    body.price = { [Op.between]: [req.query.minPrice, req.query.maxPrice] };
-  }
+
   const spots = await Spot.scope(["queryParamsScope"]).findAll({
     attributes: {
       group: ["Spot.Id"],
     },
+    offset: (page - 1) * size,
+    limit: size,
   });
   if (!spots) {
     return res.status(404).json({
