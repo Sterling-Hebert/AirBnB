@@ -239,6 +239,7 @@ router.post("/:spotId/images", requireAuth, async (req, res, next) => {
         id: newImage.id,
         url: newImage.url,
         previewImage: newImage.previewImage,
+        preview: true,
       });
     }
     if (currentspot.ownerId !== req.user.id) {
