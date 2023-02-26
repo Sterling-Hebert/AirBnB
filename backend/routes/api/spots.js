@@ -377,7 +377,7 @@ router.post("/:id/reviews", reviewValidation, requireAuth, async (req, res) => {
     res.status(404).json({ message: "Spot couldnt be found", statusCode: 404 });
   }
   const checkforReview = await Review.findOne({
-    where: { userId: req.user.id },
+    where: { userId: req.user.id, spotId: req.params.id },
   });
   if (checkforReview) {
     return res.status(403).json({
