@@ -52,52 +52,65 @@ const queryValueCheck = [
 ];
 
 // finding all spots
-// router.get("/", queryValueCheck, async (req, res, next) => {
-//   // query params
-//   let { page, size, maxLat, minLat, maxLng, minLng, minPrice, maxPrice } =
-//     req.query;
-//   if (Number.isNaN(page) || page < 0) page = 1;
-//   if (Number.isNaN(size) || size > 20) size = 20;
-
-//   let allSpots = [];
-//   allSpots = await Spot.scope(["allDetails"]).findAll({
-//     // where,
-//     // limit: size,
-//     // offset: size * (page - 1),
-//   });
-//   if (allSpots) {
-//     return res.json(allSpots);
-//   }
-// });
 router.get("/", queryValueCheck, async (req, res, next) => {
+  // query params
+
   let page = req.query.page;
   let size = req.query.size;
 
-  if (!page || Number.isNaN(page) || page > 10) {
+  if (Number.isNaN(page) || page <= 0) {
     page = 1;
   }
-  if (!size || Number.isNaN(size) || size > 20) {
+  if (Number.isNaN(size) || size > 20) {
     size = 20;
   }
 
-  let spots = await Spot.scope(["queryParamsScope"]).findAll({
-    exclude: ["createdAt", "updatedAt"],
-    attributes: {
-      group: ["Spot.Id"],
-    },
-    offset: (page - 1) * size,
-    limit: size,
+  let allSpots = [];
+  allSpots = await Spot.scope(["queryParamsScope"]).findAll({
+    // limit: size,
+    // offset: size * (page - 1),
+    group: ["Spot.Id"],
   });
-  if (!spots) {
-    return res.status(404).json({
-      message: "Request Denied",
-      statusCode: 404,
-    });
-  }
-  if (spots) {
-    return res.status(200).json({ Spots: spots, page, size });
+  if (allSpots) {
+    return res.status(200).json({ Spots: allSpots, page, size });
   }
 });
+// router.get("/", queryValueCheck, async (req, res, next) => {
+//   let page = req.query.page;
+//   let size = req.query.size;
+
+//   if (!page || Number.isNaN(page) || page > 10) {
+//     page = 1;
+//   }
+//   if (!size || Number.isNaN(size) || size > 20) {
+//     size = 20;
+//   }
+
+//   let spots = await Spot.scope(["queryParamsScope"]).findAll({
+//     include: [
+//       { model: Review, attributes: [] },
+//       sequelize.fn(
+//         "COALESCE", //first non null value
+//         sequelize.fn("AVG", sequelize.col("Reviews.stars")),
+//         sequelize.literal("'0'")
+//       ),
+//       "avgStarRating",
+//     ],
+//     group: ["Spot.Id"],
+
+//     offset: (page - 1) * size,
+//     limit: size,
+//   });
+//   if (!spots) {
+//     return res.status(404).json({
+//       message: "Request Denied",
+//       statusCode: 404,
+//     });
+//   }
+//   if (spots) {
+//     return res.status(200).json({ Spots: spots, page, size });
+//   }
+// });
 
 //finding current users spots
 router.get("/current", requireAuth, async (req, res, next) => {
