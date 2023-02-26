@@ -70,8 +70,8 @@ const queryValueCheck = [
 //   }
 // });
 router.get("/", queryValueCheck, async (req, res, next) => {
-  const page = req.query.page;
-  const size = req.query.size;
+  let page = req.query.page;
+  let size = req.query.size;
 
   if (!page || Number.isNaN(page) || page > 10) {
     page = 1;
@@ -80,7 +80,8 @@ router.get("/", queryValueCheck, async (req, res, next) => {
     size = 20;
   }
 
-  const spots = await Spot.scope(["queryParamsScope"]).findAll({
+  let spots = await Spot.scope(["queryParamsScope"]).findAll({
+    exclude: ["createdAt", "updatedAt"],
     attributes: {
       group: ["Spot.Id"],
     },
