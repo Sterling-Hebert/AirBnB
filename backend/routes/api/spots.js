@@ -145,18 +145,28 @@ router.get("/current", requireAuth, async (req, res, next) => {
     ],
   });
   Spots.forEach((spot) => {
-    if (!spot.SpotImages) {
-      spot.dataValues.previewImage = image.url;
+    // if (!spot.SpotImages) {
+    //   spot.dataValues.previewImage = image.url;
+    // }
+
+    // for (let image of spot.SpotImages) {
+    //   if (image.dataValues.preview) {
+    //     spot.dataValues.previewImage = image.url;
+    //   }
+    //   if (!spot.dataValues.SpotImage) {
+    //     spot.dataValues.previewImage = "No preview image";
+    //   }
+    // }
+
+    const preview = SpotImage.findOne({
+      where: { spotId: spot.id, preview: true },
+    });
+    if (preview) {
+      spot.dataValues.previewImage = preview.url;
+    } else {
+      spot.dataValues.previewImage = "No Image";
     }
 
-    for (let image of spot.SpotImages) {
-      if (image.dataValues.preview) {
-        spot.dataValues.previewImage = image.url;
-      }
-      if (!spot.dataValues.SpotImage) {
-        spot.dataValues.previewImage = "No preview image";
-      }
-    }
     let starAvg = 0;
 
     for (let review of spot.Reviews) {
@@ -168,6 +178,10 @@ router.get("/current", requireAuth, async (req, res, next) => {
       spot.dataValues.avgRating = "No reviews yet";
     }
     delete spot.dataValues.Reviews;
+
+    if (!spot.SpotImages.length) {
+      Spots.SpotImages = "No image";
+    }
   });
   if (Spots) {
     res.json({ Spots });
