@@ -61,18 +61,18 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Spot",
       defaultScope: {
         include: [
-          {
-            association: "SpotImages",
-            required: false,
-            where: { preview: true },
-            attributes: [],
-          },
-          {
-            //gotta include the models in order for fn to recognize the columns
-            association: "Reviews",
-            required: false,
-            attributes: ["id", "review", "stars"],
-          },
+          // {
+          //   association: "SpotImages",
+          //   required: false,
+          //   where: { preview: true },
+          //   attributes: [],
+          // },
+          // {
+          //   //gotta include the models in order for fn to recognize the columns
+          //   association: "Reviews",
+          //   required: false,
+          //   attributes: ["id", "review", "stars"],
+          // },
         ],
 
         attributes: [
@@ -89,22 +89,22 @@ module.exports = (sequelize, DataTypes) => {
           "price",
           "createdAt",
           "updatedAt",
-          [
-            sequelize.fn(
-              "COALESCE",
-              sequelize.col("SpotImages.url"),
-              sequelize.literal("'image preview unavailable'")
-            ),
-            "previewImage",
-          ],
-          [
-            sequelize.fn(
-              "COALESCE", //first non null value
-              sequelize.fn("AVG", sequelize.col("Reviews.stars")),
-              sequelize.literal("'0'")
-            ),
-            "avgStarRating",
-          ],
+          // [
+          //   sequelize.fn(
+          //     "COALESCE",
+          //     sequelize.col("SpotImages.url"),
+          //     sequelize.literal("'image preview unavailable'")
+          //   ),
+          //   "previewImage",
+          // ],
+          // [
+          //   sequelize.fn(
+          //     "COALESCE", //first non null value
+          //     sequelize.fn("AVG", sequelize.col("Reviews.stars")),
+          //     sequelize.literal("'0'")
+          //   ),
+          //   "avgStarRating",
+          // ],
         ],
       },
       scopes: {
