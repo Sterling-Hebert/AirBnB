@@ -129,8 +129,45 @@ router.get("/", queryValueCheck, async (req, res) => {
 
 //finding current users spots
 router.get("/current", requireAuth, async (req, res, next) => {
+  const spotImage = await SpotImage.findOne({
+    where: { spotId: req.user.id, preview: true },
+  });
+
   const Spots = await Spot.findAll({
     where: { ownerId: req.user.id },
+    include: [
+      {
+        model: SpotImage,
+      },
+      {
+        model: Review,
+      },
+    ],
+  });
+  Spots.forEach((spot) => {
+    if (!spot.SpotImages) {
+      spot.dataValues.previewImage = image.url;
+    }
+
+    for (let image of spot.SpotImages) {
+      if (image.dataValues.preview) {
+        spot.dataValues.previewImage = image.url;
+      }
+      if (!spot.dataValues.SpotImage) {
+        spot.dataValues.previewImage = "No preview image";
+      }
+    }
+    let starAvg = 0;
+
+    for (let review of spot.Reviews) {
+      starAvg += review.dataValues.stars;
+    }
+    starAvg = starAvg / spot.Reviews.length;
+    spot.dataValues.avgRating = starAvg;
+    if (!spot.dataValues.avgRating) {
+      spot.dataValues.avgRating = "No reviews yet";
+    }
+    delete spot.dataValues.Reviews;
   });
   if (Spots) {
     res.json({ Spots });
@@ -151,16 +188,31 @@ router.get("/:spotId", async (req, res) => {
     };
     return res.json(errorSpot);
   }
-  const foundSpotValid = await Spot.scope(["allDetails"]).findByPk(
+  const spot = await Spot.scope(["defaultScope", "allDetails"]).findByPk(
     req.params.spotId,
     {
+      include: [
+        // {
+        //   model: Review,
+        // },
+      ],
       attributes: {
         group: ["Spot.Id"],
       },
     }
   );
+  let starAvg = 0;
+  for (let review of spot.Reviews) {
+    starAvg += review.dataValues.stars;
+  }
+  starAvg = starAvg / spot.Reviews.length;
+  spot.dataValues.avgRating = starAvg;
+  if (!spot.dataValues.avgRating) {
+    spot.dataValues.avgRating = "No reviews yet";
+  }
+  delete spot.dataValues.Reviews;
 
-  res.json(foundSpotValid);
+  res.json(spot);
 });
 
 const spotParamsCheck = [

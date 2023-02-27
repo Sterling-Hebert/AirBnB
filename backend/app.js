@@ -65,7 +65,7 @@ app.use((err, _req, res, _next) => {
   console.error(err);
   res.json({
     title: err.title || "Server Error",
-    message: err.message,
+    message: err.message || "Auth Required",
     errors: err.errors,
     stack: isProduction ? null : err.stack,
   });
