@@ -21,18 +21,12 @@ const router = express.Router();
 
 //Get all of the Current User's Booking
 
-router.get("/current", requireAuth, async (req, res, next) => {
+router.get("/current", requireAuth, async (req, res) => {
   const bookings = await Booking.findAll({
-    where: {
-      userId: req.user.id,
-    },
+    where: { userId: req.user.id },
     include: [
-      // {
-      //   model: User,
-      //   attributes: ["id", "firstName", "lastName"],
-      // },
       {
-        model: Spot,
+        model: Spot.scope("reviewCurrentUserScope"),
         attributes: {
           exclude: ["description", "createdAt", "updatedAt"],
         },
@@ -40,29 +34,18 @@ router.get("/current", requireAuth, async (req, res, next) => {
     ],
   });
 
-  for (let booking of bookings) {
-    const preview = await SpotImage.findOne({
-      where: {
-        spotId: booking.Spot.id,
-        preview: true,
-      },
+  bookings.forEach((booking) => {
+    const previewPic = SpotImage.findOne({
+      where: { spotId: booking.Spot.id, preview: true },
     });
-    if (preview) {
-      booking.Spot.dataValues.previewImage = preview.url;
+    if (previewPic) {
+      booking.Spot.dataValues.previewImage = previewPic.url;
     } else {
-      booking.Spot.dataValues.previewImage = "No Image";
+      booking.Spot.dataValues.previewImage = "No Preview Image";
     }
-  }
+  });
 
-  if (!bookings.length) {
-    res.status(404);
-    return res.json({
-      message: "Booking couldnt be found",
-      statusCode: 404,
-    });
-  }
-
-  res.json({ Bookings: bookings });
+  return res.json({ Bookings: bookings });
 });
 
 //edit a booking

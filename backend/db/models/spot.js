@@ -61,20 +61,18 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Spot",
       defaultScope: {
         include: [
-          // {
-          //   association: "SpotImages",
-          //   required: false,
-          //   where: { preview: true },
-          //   attributes: [],
-          // },
-          // {
-          //   //gotta include the models in order for fn to recognize the columns
-          //   association: "Reviews",
-          //   required: false,
-          //   attributes: ["id", "review", "stars"],
-          // },
+          {
+            association: "SpotImages",
+            required: false,
+            where: { preview: true },
+            attributes: [],
+          },
+          {
+            association: "Reviews",
+            required: false,
+            attributes: [],
+          },
         ],
-
         attributes: [
           "id",
           "ownerId",
@@ -89,39 +87,40 @@ module.exports = (sequelize, DataTypes) => {
           "price",
           "createdAt",
           "updatedAt",
-          // [
-          //   sequelize.fn(
-          //     "COALESCE",
-          //     sequelize.col("SpotImages.url"),
-          //     sequelize.literal("'image preview unavailable'")
-          //   ),
-          //   "previewImage",
-          // ],
-          // [
-          //   sequelize.fn(
-          //     "COALESCE", //first non null value
-          //     sequelize.fn("AVG", sequelize.col("Reviews.stars")),
-          //     sequelize.literal("'0'")
-          //   ),
-          //   "avgStarRating",
-          // ],
+
+          [
+            sequelize.fn(
+              "COALESCE",
+              sequelize.col("SpotImages.url"),
+              sequelize.literal("'image preview unavailable'")
+            ),
+            "previewImage",
+          ],
+          [
+            sequelize.fn(
+              "COALESCE",
+              sequelize.fn("AVG", sequelize.col("Reviews.stars")),
+              0
+            ),
+            "avgRating",
+          ],
         ],
+        group: ["Spot.id", "SpotImages.url"],
       },
       scopes: {
-        allDetails: {
+        iHateScopes: {
           include: [
             {
-              //gotta include the models in order for fn to recognize the columns
               association: "Reviews",
               required: false,
-              attributes: ["id", "review", "stars"],
+              attributes: [],
             },
             {
               association: "SpotImages",
               required: false,
-              where: { preview: true },
               attributes: ["id", "url", "preview"],
             },
+
             {
               association: "Owner",
               required: false,
@@ -129,44 +128,16 @@ module.exports = (sequelize, DataTypes) => {
             },
           ],
           attributes: [
-            "id",
-            "ownerId",
-            "address",
-            "city",
-            "state",
-            "country",
-            "lat",
-            "lng",
-            "name",
-            "description",
-            "price",
-            "createdAt",
-            "updatedAt",
             [
               sequelize.fn(
-                "COALESCE", //first non null value
+                "COALESCE",
                 sequelize.fn("COUNT", sequelize.col("Reviews.id")),
                 0
               ),
               "numReviews",
             ],
-            [
-              sequelize.fn(
-                "COALESCE", //first non null value
-                sequelize.fn("AVG", sequelize.col("Reviews.stars")),
-                sequelize.literal("'0'")
-              ),
-              "avgStarRating",
-            ],
-            [
-              sequelize.fn(
-                "COALESCE",
-                sequelize.col("SpotImages.url"),
-                sequelize.literal("'image preview unavailable'")
-              ),
-              "previewImage",
-            ],
           ],
+          group: ["Spot.id", "SpotImages.id", "Reviews.id", "Owner.id"],
         },
         reviewCurrentUserScope: {
           attributes: [
@@ -184,7 +155,7 @@ module.exports = (sequelize, DataTypes) => {
             "createdAt",
             "updatedAt",
           ],
-          group: [Spot.id],
+          group: ["Spot.id"],
         },
       },
     }
