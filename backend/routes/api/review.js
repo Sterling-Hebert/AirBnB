@@ -13,7 +13,6 @@ const sequelize = require("sequelize");
 const { requireAuth } = require("../../utils/auth");
 const { handleValidationErrors } = require("../../utils/validation");
 const { Op } = require("sequelize");
-const { ResultWithContext } = require("express-validator/src/chain");
 const { check } = require("express-validator");
 const router = express.Router();
 
