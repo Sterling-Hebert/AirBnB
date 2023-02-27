@@ -60,14 +60,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Spot",
       defaultScope: {
-        include: [
-          // {
-          //   //gotta include the models in order for fn to recognize the columns
-          //   association: "Reviews",
-          //   required: false,
-          //   attributes: [],
-          // },
-        ],
+        include: [],
 
         attributes: [
           "id",
