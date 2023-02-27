@@ -60,7 +60,14 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Spot",
       defaultScope: {
-        include: [],
+        include: [
+          {
+            association: "SpotImages",
+            required: false,
+            where: { preview: true },
+            attributes: [],
+          },
+        ],
 
         attributes: [
           "id",
@@ -76,6 +83,14 @@ module.exports = (sequelize, DataTypes) => {
           "price",
           "createdAt",
           "updatedAt",
+          [
+            sequelize.fn(
+              "COALESCE",
+              sequelize.col("SpotImages.url"),
+              sequelize.literal("'image preview unavailable'")
+            ),
+            "previewImage",
+          ],
         ],
       },
       scopes: {

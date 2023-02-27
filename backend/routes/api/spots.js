@@ -128,66 +128,64 @@ router.get("/", queryValueCheck, async (req, res) => {
 });
 
 //finding current users spots
-router.get("/current", requireAuth, async (req, res, next) => {
-  const spotImage = await SpotImage.findOne({
-    where: { spotId: req.user.id, preview: true },
-  });
-
+// router.get("/current", requireAuth, async (req, res, next) => {
+// const spotImage = await SpotImage.findOne({
+//   where: { spotId: req.user.id, preview: true },
+// });
+// const Spots = await Spot.findAll({
+//   where: { ownerId: req.user.id },
+//   include: [
+//     // {
+//     //   model: SpotImage,
+//     // },
+//     {
+//       model: Review,
+//     },
+//   ],
+// });
+// Spots.forEach((spot) => {
+//   // if (!spot.SpotImages) {
+//   //   spot.dataValues.previewImage = image.url;
+//   // }
+//   // for (let image of spot.SpotImages) {
+//   //   if (image.dataValues.preview) {
+//   //     spot.dataValues.previewImage = image.url;
+//   //   }
+//   //   if (!spot.dataValues.SpotImage) {
+//   //     spot.dataValues.previewImage = "No preview image";
+//   //   }
+//   // }
+//   const preview = SpotImage.findOne({
+//     where: { spotId: spot.id, preview: true },
+//   });
+//   if (preview) {
+//     spot.dataValues.previewImage = preview.url;
+//   } else {
+//     spot.dataValues.previewImage = "No Image";
+//   }
+//   let starAvg = 0;
+//   for (let review of spot.Reviews) {
+//     starAvg += review.dataValues.stars;
+//   }
+//   starAvg = starAvg / spot.Reviews.length;
+//   spot.dataValues.avgRating = starAvg;
+//   if (!spot.dataValues.avgRating) {
+//     spot.dataValues.avgRating = "No reviews yet";
+//   }
+//   delete spot.dataValues.Reviews;
+// });
+// if (Spots) {
+//   res.json({ Spots });
+// } else {
+//   res.json("No spots for this current user");
+// }
+// });
+router.get("/current", requireAuth, async (req, res) => {
   const Spots = await Spot.findAll({
+    //default scope
     where: { ownerId: req.user.id },
-    include: [
-      {
-        model: SpotImage,
-      },
-      {
-        model: Review,
-      },
-    ],
   });
-  Spots.forEach((spot) => {
-    // if (!spot.SpotImages) {
-    //   spot.dataValues.previewImage = image.url;
-    // }
-
-    // for (let image of spot.SpotImages) {
-    //   if (image.dataValues.preview) {
-    //     spot.dataValues.previewImage = image.url;
-    //   }
-    //   if (!spot.dataValues.SpotImage) {
-    //     spot.dataValues.previewImage = "No preview image";
-    //   }
-    // }
-
-    const preview = SpotImage.findOne({
-      where: { spotId: spot.id, preview: true },
-    });
-    if (preview) {
-      spot.dataValues.previewImage = preview.url;
-    } else {
-      spot.dataValues.previewImage = "No Image";
-    }
-
-    let starAvg = 0;
-
-    for (let review of spot.Reviews) {
-      starAvg += review.dataValues.stars;
-    }
-    starAvg = starAvg / spot.Reviews.length;
-    spot.dataValues.avgRating = starAvg;
-    if (!spot.dataValues.avgRating) {
-      spot.dataValues.avgRating = "No reviews yet";
-    }
-    delete spot.dataValues.Reviews;
-
-    if (!spot.SpotImages.length) {
-      Spots.SpotImages = "No image";
-    }
-  });
-  if (Spots) {
-    res.json({ Spots });
-  } else {
-    res.json("No spots for this current user");
-  }
+  return res.json({ Spots });
 });
 
 // finding details of a spot based off spotid
