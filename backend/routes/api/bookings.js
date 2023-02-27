@@ -34,6 +34,9 @@ router.get("/current", requireAuth, async (req, res) => {
     ],
   });
 
+  const previewImage =
+    Spot.SpotImages > 0 ? Spot.SpotImages[0].url : "No preview Image";
+
   bookings.forEach((booking) => {
     const previewPic = SpotImage.findOne({
       where: { spotId: booking.Spot.id, preview: true },
@@ -45,7 +48,7 @@ router.get("/current", requireAuth, async (req, res) => {
     }
   });
 
-  return res.json({ Bookings: bookings });
+  return res.json({ Bookings: bookings, previewImage });
 });
 
 //edit a booking
