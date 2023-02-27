@@ -16,7 +16,6 @@ const { handleValidationErrors } = require("../../utils/validation");
 const { json } = require("sequelize");
 const sequelize = require("sequelize");
 const { Op } = require("sequelize");
-const spot = require("../../db/models/spot");
 
 const router = express.Router();
 
@@ -56,64 +55,29 @@ const queryValueCheck = [
 router.get("/", queryValueCheck, async (req, res) => {
   let { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } =
     req.query;
-  let errors = {};
-  if (page < 1) {
-    errors.page = "Page must be greater than or equal to 1";
-  }
-  if (!page || Number.isNaN(page) || page > 10) {
+  if (!page) {
     page = 1;
   }
-  if (size < 1) {
-    errors.size = "Size must be greater than or equal to 1";
-  }
-  if (!size || Number.isNaN(size) || size > 20) {
+  if (!size) {
     size = 20;
   }
-  if (minLat < -90 || minLat > 90 || Number.isNaN(minLat)) {
-    errors.minLat = "Minimum latitude is invalid";
-  }
   if (!minLat) {
-    minLat = -90;
-  }
-  if (maxLat < -90 || maxLat > 90 || Number.isNaN(maxLat)) {
-    errors.maxLat = "Minimum latitude is invalid";
+    minLat = -500;
   }
   if (!maxLat) {
-    maxLat = 90;
-  }
-  if (minLng < -180 || minLng > 180 || Number.isNaN(minLng)) {
-    errors.minLng = "Minimum latitude is invalid";
+    maxLat = 500;
   }
   if (!minLng) {
-    minLng = -180;
-  }
-  if (maxLng < -180 || maxLng > 180 || Number.isNaN(maxLng)) {
-    errors.maxLng = "Minimum latitude is invalid";
+    minLng = -500;
   }
   if (!maxLng) {
-    maxLng = 180;
-  }
-
-  if (minPrice < 0) {
-    errors.minPrice = "Minimum price must be greater than or equal to 0";
+    maxLng = 500;
   }
   if (!minPrice) {
-    minPrice = 1;
-  }
-
-  if (maxPrice < 0) {
-    errors.maxPrice = "Minimum price must be greater than or equal to 0";
+    minPrice = 0;
   }
   if (!maxPrice) {
-    maxPrice = 100000;
-  }
-
-  if (Object.keys(errors).length) {
-    return res.status(400).json({
-      message: "Validation Error",
-      statusCode: 400,
-      errors: errors,
-    });
+    maxPrice = 10000000000;
   }
 
   page = Number(page);
@@ -131,15 +95,13 @@ router.get("/", queryValueCheck, async (req, res) => {
       },
       {
         model: SpotImage,
-        // attributes: ["preview"],
       },
     ],
-
     offset: (page - 1) * size,
     limit: size,
   });
 
-  for (let spot of spots) {
+  spots.forEach((spot) => {
     for (let image of spot.SpotImages) {
       if (image.dataValues.preview) {
         spot.dataValues.previewImage = image.url;
@@ -149,47 +111,21 @@ router.get("/", queryValueCheck, async (req, res) => {
       }
       delete spot.dataValues.SpotImages;
     }
+    let starAvg = 0;
 
-    let average = 0;
     for (let review of spot.Reviews) {
-      average += review.dataValues.stars;
+      starAvg += review.dataValues.stars;
     }
-    average = average / spot.Reviews.length;
-    spot.dataValues.avgRating = average;
+    starAvg = starAvg / spot.Reviews.length;
+    spot.dataValues.avgRating = starAvg;
     if (!spot.dataValues.avgRating) {
       spot.dataValues.avgRating = "No reviews yet";
     }
     delete spot.dataValues.Reviews;
-  }
+  });
 
   return res.json({ Spots: spots, page, size });
 });
-
-//old find all spots:
-
-// router.get("/", queryValueCheck, async (req, res, next) => {
-//   // query params
-
-//   let page = req.query.page;
-//   let size = req.query.size;
-
-//   if (Number.isNaN(page) || page <= 0) {
-//     page = 1;
-//   }
-//   if (Number.isNaN(size) || size > 20) {
-//     size = 20;
-//   }
-
-//   let allSpots = [];
-//   allSpots = await Spot.scope(["queryParamsScope"]).findAll({
-//     // limit: size,
-//     // offset: size * (page - 1),
-//     group: ["Spot.Id"],
-//   });
-//   if (allSpots) {
-//     return res.status(200).json({ Spots: allSpots, page, size });
-//   }
-// });
 
 //finding current users spots
 router.get("/current", requireAuth, async (req, res, next) => {
