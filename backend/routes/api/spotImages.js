@@ -31,7 +31,7 @@ router.delete("/:id", requireAuth, async (req, res) => {
   const user = await Spot.findByPk(deletedImage.dataValues.spotId, {
     attributes: ["ownerId"],
   });
-
+  //owner check
   if (user.ownerId !== req.user.id) {
     res.status(403);
     res.json({

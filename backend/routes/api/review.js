@@ -40,7 +40,7 @@ router.get("/current", requireAuth, async (req, res, next) => {
       },
     ],
   });
-
+  //preview variable
   for (let review of reviews) {
     const preview = await SpotImage.findOne({
       where: {
@@ -67,6 +67,8 @@ router.post("/:id/images", requireAuth, async (req, res) => {
       .status(404)
       .json({ message: "Review couldn't be found", statusCode: 404 });
   }
+
+  //owner check
   if (findReview.userId !== req.user.id) {
     return res.status(403).json({ message: "Forbidden", statusCode: 403 });
   }
@@ -75,6 +77,7 @@ router.post("/:id/images", requireAuth, async (req, res) => {
       reviewId: findReview.id,
     },
   });
+  //max image limit check
   if (amountOfImages.length >= 10) {
     return res.status(403).json({
       message: "Maximum number of image for this resource was reached",
@@ -116,6 +119,8 @@ router.put("/:id", reviewValidation, requireAuth, async (req, res) => {
       .status(404)
       .json({ message: "Review couldnt be found", statusCode: 404 });
   }
+
+  //owner check
   if (updateReview.userId !== req.user.id) {
     return res.status(403).json({ message: "Forbidden", statusCode: 403 });
   }
@@ -137,6 +142,7 @@ router.delete("/:id", requireAuth, async (req, res) => {
       .status(404)
       .json({ message: "Review couldnt be found", statusCode: 404 });
   } else {
+    //owner check
     if (review.userId !== req.user.id) {
       return res.status(403).json({
         message: "Forbidden",

@@ -30,6 +30,8 @@ router.delete("/:id", requireAuth, async (req, res) => {
       id: deletedReviewImage.reviewId,
     },
   });
+
+  //owner check
   if (review.userId !== req.user.id) {
     res.status(403);
     res.json({

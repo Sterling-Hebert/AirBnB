@@ -34,9 +34,13 @@ router.get("/current", requireAuth, async (req, res) => {
     ],
   });
 
+
+  //added preview variable
   const previewImage =
     Spot.SpotImages > 0 ? Spot.SpotImages[0].url : "No preview Image";
 
+
+    //checks for each preview
   bookings.forEach((booking) => {
     const previewPic = SpotImage.findOne({
       where: { spotId: booking.Spot.id, preview: true },
@@ -63,6 +67,8 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
       statusCode: 404,
     });
   }
+
+  //past date check
   let today = new Date();
   if (booking.endDate < today) {
     res.status(403);
@@ -71,7 +77,7 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
       statusCode: 403,
     });
   }
-
+//owner check
   if (booking.userId !== req.user.id) {
     res.status(403);
     res.json({
@@ -79,6 +85,8 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
       statusCode: 403,
     });
   } else {
+
+    //start date check
     if (startDate >= endDate) {
       return res.json({
         message: "Validation error",
@@ -104,6 +112,7 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
         ],
       },
     });
+    //if error has length, throw error
     if (existingBookings.length) {
       let conflictTimeError = {
         message: "Sorry, this spot is already booked for the specified dates",
@@ -138,6 +147,8 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
 
 router.delete("/:id", requireAuth, async (req, res) => {
   const deletedbooking = await Booking.findByPk(req.params.id);
+
+
 
   if (!deletedbooking) {
     return res.json({

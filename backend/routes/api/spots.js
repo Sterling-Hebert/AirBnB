@@ -55,8 +55,7 @@ const queryValueCheck = [
 router.get("/", async (req, res) => {
   let { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } =
     req.query;
-  let errors = {};
-
+  //check for undefined query params
   if (!page) {
     page = 1;
   }
@@ -102,7 +101,7 @@ router.get("/", async (req, res) => {
     offset: (page - 1) * size,
     limit: size,
   });
-
+  //forEach spot, check preview value and
   spots.forEach((spot) => {
     for (let image of spot.SpotImages) {
       if (image.dataValues.preview) {
@@ -111,9 +110,9 @@ router.get("/", async (req, res) => {
       if (!spot.dataValues.previewImage) {
         spot.dataValues.previewImage = "No preview image";
       }
-      delete spot.dataValues.SpotImages;
     }
-
+    //calculate avg rating
+    //comeback to create fn
     let starAvg = 0;
     for (let review of spot.Reviews) {
       starAvg += review.dataValues.stars;
@@ -123,7 +122,6 @@ router.get("/", async (req, res) => {
     if (!spot.dataValues.avgRating) {
       spot.dataValues.avgRating = "No reviews yet";
     }
-    delete spot.dataValues.Reviews;
   });
   return res.json({ Spots: spots, page, size });
 });
@@ -141,7 +139,7 @@ router.get("/current", requireAuth, async (req, res) => {
 router.get("/:spotId", async (req, res) => {
   let thisSpot = await Spot.scope(["defaultScope", "iHateScopes"]).findOne({
     where: { id: req.params.spotId },
-    group: ["Spot.id", "SpotImages.id", "Reviews.id", "Owner.id"],
+    group: ["Spot.id", "SpotImages.id", "Reviews.id", "Owner.id"], //required by postgres
   });
 
   if (!thisSpot) {
@@ -224,17 +222,6 @@ router.post("/", spotParamsCheck, requireAuth, async (req, res) => {
 
 //add image by spotid
 router.post("/:spotId/images", requireAuth, async (req, res, next) => {
-  // const userId = req.user.id;
-  // const spotId = req.params;
-  // const user = await Spot.findOne({ where: { ownerId: userId, id: spotId } });
-  // if (!user) {
-  //   const err = new Error("Unauthorized access");
-  //   err.title = "Forbidden";
-  //   err.errors = ["Forbidden"];
-  //   err.status = 403;
-  //   return next(err);
-  // }
-
   const currentspot = await Spot.findByPk(req.params.spotId);
 
   if (!currentspot) {
@@ -258,6 +245,8 @@ router.post("/:spotId/images", requireAuth, async (req, res, next) => {
         preview: newImage.preview,
       });
     }
+
+    //owner check
     if (currentspot.ownerId !== req.user.id) {
       res.status(403).json({
         message: "Forbidden",
@@ -277,7 +266,7 @@ router.put("/:spotId", spotParamsCheck, requireAuth, async (req, res, next) => {
       statusCode: 404,
     });
   }
-
+  //owner check
   if (!spot.ownerId === req.user.id) {
     res.status(401);
     res.json({
@@ -323,7 +312,7 @@ router.delete("/:spotId", requireAuth, async (req, res, next) => {
       statusCode: 404,
     });
   }
-
+  //owner check
   if (Deleted.ownerId === req.user.id) {
     if (Deleted) {
       await Deleted.destroy();
@@ -360,6 +349,7 @@ router.get("/:id/reviews", async (req, res) => {
       },
     ],
   });
+
   if (!allReviewsSpot.length) {
     res.status(404).json({ message: "Spot couldnt be found", statusCode: 404 });
   }
@@ -397,6 +387,7 @@ router.post("/:id/reviews", requireAuth, reviewValidation, async (req, res) => {
       [Op.and]: [{ userId: req.user.id }, { spotId: req.params.id }],
     },
   });
+  //previous review check
   if (isReviewed.length > 0) {
     return res.status(403).json({
       message: "User already has a review for this spot",
@@ -437,6 +428,8 @@ router.get("/:id/bookings", requireAuth, async (req, res) => {
       },
     },
   });
+
+  //format checker based off owner or not owner
   const ownerBookingTest = [];
   booking.forEach((ele) => {
     if (ele.userId === req.user.id) {
@@ -480,12 +473,14 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
       statusCode: 404,
     });
   }
+  //owner check
   if (currentspot.ownerId === req.user.id) {
     return res.status(403).json({
       message: "Forbidden, You cannot book your own spot",
       statusCode: 403,
     });
   }
+  //end date check
   if (startDate >= endDate) {
     return res.json({
       message: "Validation error",
@@ -497,7 +492,7 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
   const existingBookings = await Booking.findAll({
     attributes: [
       [sequelize.fn("date", sequelize.col("startDate")), "startDate"],
-      [sequelize.fn("date", sequelize.col("endDate")), "endDate"],
+      [sequelize.fn("date", sequelize.col("endDate")), "endDate"], //check back
     ],
     where: {
       spotId,

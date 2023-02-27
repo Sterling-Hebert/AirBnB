@@ -105,7 +105,7 @@ module.exports = (sequelize, DataTypes) => {
             "avgRating",
           ],
         ],
-        group: ["Spot.id", "SpotImages.url"],
+        group: ["Spot.id", "SpotImages.url"], //required by postgres
       },
       scopes: {
         iHateScopes: {
@@ -137,7 +137,7 @@ module.exports = (sequelize, DataTypes) => {
               "numReviews",
             ],
           ],
-          group: ["Spot.id", "SpotImages.id", "Reviews.id", "Owner.id"],
+          group: ["Spot.id", "SpotImages.id", "Reviews.id", "Owner.id"], //required by postgres
         },
         reviewCurrentUserScope: {
           attributes: [
@@ -155,7 +155,7 @@ module.exports = (sequelize, DataTypes) => {
             "createdAt",
             "updatedAt",
           ],
-          group: ["Spot.id"],
+          group: ["Spot.id"], //required by postgres
         },
       },
     }
