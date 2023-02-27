@@ -16,6 +16,7 @@ const { handleValidationErrors } = require("../../utils/validation");
 const { json } = require("sequelize");
 const sequelize = require("sequelize");
 const { Op } = require("sequelize");
+const spot = require("../../db/models/spot");
 
 const router = express.Router();
 
@@ -52,63 +53,141 @@ const queryValueCheck = [
 ];
 
 // finding all spots
-router.get("/", queryValueCheck, async (req, res, next) => {
-  // query params
-
-  let page = req.query.page;
-  let size = req.query.size;
-
-  if (Number.isNaN(page) || page <= 0) {
+router.get("/", queryValueCheck, async (req, res) => {
+  let { page, size, minLat, maxLat, minLng, maxLng, minPrice, maxPrice } =
+    req.query;
+  let errors = {};
+  if (page < 1) {
+    errors.page = "Page must be greater than or equal to 1";
+  }
+  if (!page || Number.isNaN(page) || page > 10) {
     page = 1;
   }
-  if (Number.isNaN(size) || size > 20) {
+  if (size < 1) {
+    errors.size = "Size must be greater than or equal to 1";
+  }
+  if (!size || Number.isNaN(size) || size > 20) {
     size = 20;
   }
-
-  let allSpots = [];
-  allSpots = await Spot.scope(["queryParamsScope"]).findAll({
-    // limit: size,
-    // offset: size * (page - 1),
-    group: ["Spot.Id"],
-  });
-  if (allSpots) {
-    return res.status(200).json({ Spots: allSpots, page, size });
+  if (minLat < -90 || minLat > 90 || Number.isNaN(minLat)) {
+    errors.minLat = "Minimum latitude is invalid";
   }
+  if (!minLat) {
+    minLat = -90;
+  }
+  if (maxLat < -90 || maxLat > 90 || Number.isNaN(maxLat)) {
+    errors.maxLat = "Minimum latitude is invalid";
+  }
+  if (!maxLat) {
+    maxLat = 90;
+  }
+  if (minLng < -180 || minLng > 180 || Number.isNaN(minLng)) {
+    errors.minLng = "Minimum latitude is invalid";
+  }
+  if (!minLng) {
+    minLng = -180;
+  }
+  if (maxLng < -180 || maxLng > 180 || Number.isNaN(maxLng)) {
+    errors.maxLng = "Minimum latitude is invalid";
+  }
+  if (!maxLng) {
+    maxLng = 180;
+  }
+
+  if (minPrice < 0) {
+    errors.minPrice = "Minimum price must be greater than or equal to 0";
+  }
+  if (!minPrice) {
+    minPrice = 1;
+  }
+
+  if (maxPrice < 0) {
+    errors.maxPrice = "Minimum price must be greater than or equal to 0";
+  }
+  if (!maxPrice) {
+    maxPrice = 100000;
+  }
+
+  if (Object.keys(errors).length) {
+    return res.status(400).json({
+      message: "Validation Error",
+      statusCode: 400,
+      errors: errors,
+    });
+  }
+
+  page = Number(page);
+  size = Number(size);
+
+  const spots = await Spot.findAll({
+    where: {
+      lat: { [Op.between]: [minLat, maxLat] },
+      lng: { [Op.between]: [minLng, maxLng] },
+      price: { [Op.between]: [minPrice, maxPrice] },
+    },
+    include: [
+      {
+        model: Review,
+      },
+      {
+        model: SpotImage,
+        // attributes: ["preview"],
+      },
+    ],
+
+    offset: (page - 1) * size,
+    limit: size,
+  });
+
+  for (let spot of spots) {
+    for (let image of spot.SpotImages) {
+      if (image.dataValues.preview) {
+        spot.dataValues.previewImage = image.url;
+      }
+      if (!spot.dataValues.previewImage) {
+        spot.dataValues.previewImage = "No preview image";
+      }
+      delete spot.dataValues.SpotImages;
+    }
+
+    let average = 0;
+    for (let review of spot.Reviews) {
+      average += review.dataValues.stars;
+    }
+    average = average / spot.Reviews.length;
+    spot.dataValues.avgRating = average;
+    if (!spot.dataValues.avgRating) {
+      spot.dataValues.avgRating = "No reviews yet";
+    }
+    delete spot.dataValues.Reviews;
+  }
+
+  return res.json({ Spots: spots, page, size });
 });
+
+//old find all spots:
+
 // router.get("/", queryValueCheck, async (req, res, next) => {
+//   // query params
+
 //   let page = req.query.page;
 //   let size = req.query.size;
 
-//   if (!page || Number.isNaN(page) || page > 10) {
+//   if (Number.isNaN(page) || page <= 0) {
 //     page = 1;
 //   }
-//   if (!size || Number.isNaN(size) || size > 20) {
+//   if (Number.isNaN(size) || size > 20) {
 //     size = 20;
 //   }
 
-//   let spots = await Spot.scope(["queryParamsScope"]).findAll({
-//     include: [
-//       { model: Review, attributes: [] },
-//       sequelize.fn(
-//         "COALESCE", //first non null value
-//         sequelize.fn("AVG", sequelize.col("Reviews.stars")),
-//         sequelize.literal("'0'")
-//       ),
-//       "avgStarRating",
-//     ],
+//   let allSpots = [];
+//   allSpots = await Spot.scope(["queryParamsScope"]).findAll({
+//     // limit: size,
+//     // offset: size * (page - 1),
 //     group: ["Spot.Id"],
-
-//     offset: (page - 1) * size,
-//     limit: size,
 //   });
-//   if (!spots) {
-//     return res.status(404).json({
-//       message: "Request Denied",
-//       statusCode: 404,
-//     });
-//   }
-//   if (spots) {
-//     return res.status(200).json({ Spots: spots, page, size });
+//   if (allSpots) {
+//     return res.status(200).json({ Spots: allSpots, page, size });
 //   }
 // });
 
@@ -218,6 +297,17 @@ router.post("/", spotParamsCheck, requireAuth, async (req, res) => {
 
 //add image by spotid
 router.post("/:spotId/images", requireAuth, async (req, res, next) => {
+  // const userId = req.user.id;
+  // const spotId = req.params;
+  // const user = await Spot.findOne({ where: { ownerId: userId, id: spotId } });
+  // if (!user) {
+  //   const err = new Error("Unauthorized access");
+  //   err.title = "Forbidden";
+  //   err.errors = ["Forbidden"];
+  //   err.status = 403;
+  //   return next(err);
+  // }
+
   const currentspot = await Spot.findByPk(req.params.spotId);
 
   if (!currentspot) {
@@ -232,20 +322,19 @@ router.post("/:spotId/images", requireAuth, async (req, res, next) => {
       const newImage = await SpotImage.create({
         spotId: req.params.spotId,
         url: url,
-        previewImage: preview,
+        preview: preview,
       });
 
-      res.json({
+      return res.status(200).json({
         id: newImage.id,
         url: newImage.url,
-        previewImage: newImage.previewImage,
-        preview: true,
+        preview: newImage.preview,
       });
     }
     if (currentspot.ownerId !== req.user.id) {
-      res.status(401).json({
-        message: "Unauthorized action. Only the spot owner can add new image",
-        status: 401,
+      res.status(403).json({
+        message: "Forbidden",
+        status: 403,
       });
     }
   }
@@ -265,8 +354,8 @@ router.put("/:spotId", spotParamsCheck, requireAuth, async (req, res, next) => {
   if (!spot.ownerId === req.user.id) {
     res.status(401);
     res.json({
-      message: "Operation failed. Must be owner of the spot in order to edit",
-      statusCode: 401,
+      message: "Forbidden",
+      statusCode: 403,
     });
   } else {
     const {
@@ -317,11 +406,10 @@ router.delete("/:spotId", requireAuth, async (req, res, next) => {
       });
     }
   } else {
-    res.status(401);
+    res.status(403);
     res.json({
-      message:
-        "Operation failed. The current user must be the owner of the spot",
-      statusCode: 401,
+      message: "Forbidden",
+      statusCode: 403,
     });
   }
 });
@@ -463,7 +551,7 @@ router.post("/:id/bookings", requireAuth, async (req, res, next) => {
   }
   if (currentspot.ownerId === req.user.id) {
     return res.status(403).json({
-      message: "You cannot book your own spot",
+      message: "Forbidden, You cannot book your own spot",
       statusCode: 403,
     });
   }

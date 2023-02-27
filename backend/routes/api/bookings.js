@@ -88,11 +88,10 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
   }
 
   if (booking.userId !== req.user.id) {
-    res.status(401);
+    res.status(403);
     res.json({
-      message:
-        "Operation failed. Must be owner of the booking in order to edit",
-      statusCode: 401,
+      message: "Forbidden",
+      statusCode: 403,
     });
   } else {
     if (startDate >= endDate) {
@@ -162,11 +161,10 @@ router.delete("/:id", requireAuth, async (req, res) => {
     });
   }
   if (deletedbooking.userId !== req.user.id) {
-    res.status(401);
+    res.status(403);
     res.json({
-      message:
-        "Operation failed. Must be owner of the booking in order to edit",
-      statusCode: 401,
+      message: "Forbidden",
+      statusCode: 403,
     });
   }
 

@@ -69,9 +69,7 @@ router.post("/:id/images", requireAuth, async (req, res) => {
       .json({ message: "Review couldn't be found", statusCode: 404 });
   }
   if (findReview.userId !== req.user.id) {
-    return res
-      .status(403)
-      .json({ message: "Must be owner of review to post", statusCode: 404 });
+    return res.status(403).json({ message: "Forbidden", statusCode: 403 });
   }
   const amountOfImages = await ReviewImage.findAll({
     where: {
@@ -120,9 +118,7 @@ router.put("/:id", reviewValidation, requireAuth, async (req, res) => {
       .json({ message: "Review couldnt be found", statusCode: 404 });
   }
   if (updateReview.userId !== req.user.id) {
-    return res
-      .status(403)
-      .json({ message: "Must be owner of review to edit", statusCode: 404 });
+    return res.status(403).json({ message: "Forbidden", statusCode: 403 });
   }
   updateReview.update({
     review: review,
@@ -144,8 +140,8 @@ router.delete("/:id", requireAuth, async (req, res) => {
   } else {
     if (review.userId !== req.user.id) {
       return res.status(403).json({
-        message: "Must be owner of review to delete",
-        statusCode: 404,
+        message: "Forbidden",
+        statusCode: 403,
       });
     }
     await review.destroy();

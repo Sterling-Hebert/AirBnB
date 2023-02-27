@@ -31,10 +31,10 @@ router.delete("/:id", requireAuth, async (req, res) => {
     },
   });
   if (review.userId !== req.user.id) {
-    res.status(401);
+    res.status(403);
     res.json({
-      message: "Must be owner of the booking in order to edit",
-      statusCode: 401,
+      message: "Forbidden",
+      statusCode: 403,
     });
   } else {
     await deletedReviewImage.destroy();
