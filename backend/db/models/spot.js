@@ -109,6 +109,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       scopes: {
         iHateScopes: {
+          //use for GetAllSpots queryScope
           include: [
             {
               association: "Reviews",
@@ -140,6 +141,7 @@ module.exports = (sequelize, DataTypes) => {
           group: ["Spot.id", "SpotImages.id", "Reviews.id", "Owner.id"], //required by postgres
         },
         reviewCurrentUserScope: {
+          //use for review and booking
           attributes: [
             "id",
             "ownerId",
