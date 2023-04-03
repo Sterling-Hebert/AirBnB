@@ -48,6 +48,31 @@ module.exports = {
           description: "Colorado Ranch far from the reaches of others",
           price: 66,
         },
+        {
+          ownerId: 1,
+          address: "231 N 11th St",
+          city: "Las Vegas",
+          state: "NV",
+          country: "US",
+          lat: 11,
+          lng: 32,
+          name: "Las Vegas Hotel",
+          description:
+            "Located in Downtown Las Vegas hip Fremont East District, shareDOWNTOWN Fremont East is your home for style, luxury, convenience and community.",
+          price: 96,
+        },
+        {
+          ownerId: 1,
+          address: "1212 Bev. Hills Drive",
+          city: "Los Angeles",
+          state: "Cal",
+          country: "US",
+          lat: 11,
+          lng: 32,
+          name: "California Beach House",
+          description: "Located in beach front Los Angeles",
+          price: 100,
+        },
       ],
       {}
     );

@@ -1,7 +1,9 @@
 .hidden {
   display: none
 }
-
+.Icon {
+  position: fixed;
+}
 .navBarHeader {
   width: 100%;
   top: 0px;
@@ -10,24 +12,18 @@
   background-color: white;
   position: sticky;
   z-index: 1;
+  bottom: 5px;
 }
-
-.Icon {
-  position: fixed;
-}
-
 .actualNav {
   position: fixed;
   right: 10px;
   top: 6px;
   list-style-type: none;
 }
-
 ul.actualNav > li {
   display: inline-block;
   margin: 0px 3px
 }
-
 .profile-dropdown {
   background-color: white;
   padding: 10px;
