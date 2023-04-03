@@ -16,6 +16,7 @@ export async function csrfFetch(url, options = {}) {
     options.headers["XSRF-Token"] = Cookies.get("XSRF-TOKEN");
   }
   // call the default window's fetch with the url and the options passed in
+
   const res = await window.fetch(url, options);
 
   // if the response status code is 400 or above, then throw an error with the
@@ -26,7 +27,9 @@ export async function csrfFetch(url, options = {}) {
   // next promise chain
   return res;
 }
+
 // call this to get the "XSRF-TOKEN" cookie, should only be used in development
 export function restoreCSRF() {
   return csrfFetch("/api/csrf/restore");
 }
+// export default csrfFetch

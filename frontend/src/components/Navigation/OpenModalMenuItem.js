@@ -1,4 +1,3 @@
-// frontend/src/components/Navigation/OpenModalMenuItem.js
 import React from "react";
 import { useModal } from "../../context/Modal";
 
