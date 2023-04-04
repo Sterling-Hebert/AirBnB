@@ -23,9 +23,9 @@ function Navigation({ isLoaded }) {
   if (sessionUser) {
     sessionLinks = (
       <div>
-        <li>
+        <button className="createSpotButton">
           <Link to="/spots/new">Create a New Spot</Link>
-        </li>
+        </button>
         <li>
           <ProfileButton user={sessionUser} />
         </li>

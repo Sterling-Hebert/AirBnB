@@ -31,6 +31,7 @@ function SignupFormModal() {
         .then(closeModal)
         .catch(async (res) => {
           const data = await res.json();
+          console.log(data.errors, "---------->");
           if (data && data.errors) setErrors(data.errors);
         });
     }
@@ -44,9 +45,7 @@ function SignupFormModal() {
       <h1 className="form-header">Sign Up</h1>
       <form onSubmit={handleSubmit}>
         <ul className="errors">
-          {errors.map((error, idx) => (
-            <li key={idx}>{error}</li>
-          ))}
+          <li key={Object.keys(errors)}>{Object.values(errors)}</li>
         </ul>
         <label className="form-label">
           Email

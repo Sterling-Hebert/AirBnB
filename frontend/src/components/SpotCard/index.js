@@ -9,7 +9,7 @@ const SpotCard = ({ spot }) => {
         <p className="tile-name">
           {spot.city}, {spot.state}
           <br />
-          <b>${spot.price}</b> night
+          <b>${spot.price}</b>/Per Night
         </p>
       </div>
       <div className="spotRating">
