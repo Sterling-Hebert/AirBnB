@@ -14,7 +14,35 @@ module.exports = {
       [
         {
           spotId: 1,
-          url: "https://hgtvhome.sndimg.com/content/dam/images/hgtv/fullset/2019/4/16/1/HUHH2019-Waterfront_Jensen-Beach-FL_1.jpg.rend.hgtvcom.966.725.suffix/1555426473700.jpeg",
+          url: "https://a0.muscache.com/im/pictures/miso/Hosting-50746797/original/d9624ecd-8cd9-46da-a383-8da56598cace.jpeg?im_w=1200",
+          preview: true,
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+        },
+        {
+          spotId: 1,
+          url: "https://a0.muscache.com/im/pictures/miso/Hosting-50746797/original/110246bd-f0ce-47c8-897e-485978b9259f.jpeg?im_w=720",
+          preview: true,
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+        },
+        {
+          spotId: 1,
+          url: "https://a0.muscache.com/im/pictures/miso/Hosting-50746797/original/13af01dc-6de8-4684-8feb-2d1ddb46ef7f.jpeg?im_w=720",
+          preview: true,
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+        },
+        {
+          spotId: 1,
+          url: "https://a0.muscache.com/im/pictures/miso/Hosting-50746797/original/fc5bf69c-1c0c-4b1f-ab1e-b3193b6dde5f.jpeg?im_w=720",
+          preview: true,
+          createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+          updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
+        },
+        {
+          spotId: 1,
+          url: "https://a0.muscache.com/im/pictures/miso/Hosting-50746797/original/d9624ecd-8cd9-46da-a383-8da56598cace.jpeg?im_w=1200",
           preview: true,
           createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
           updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),
@@ -35,7 +63,7 @@ module.exports = {
         },
         {
           spotId: 4,
-          url: "https://ewscripps.brightspotcdn.com/dims4/default/92c3d38/2147483647/strip/true/crop/3085x1735+0+0/resize/1280x720!/quality/90/?url=http%3A%2F%2Fewscripps-brightspot.s3.amazonaws.com%2F6c%2F28%2Ff3fb2e7e40d1801009f723973896%2F11th-st-share-downtown-rendering-2022.jpg",
+          url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOR89O23SxoyR7Qy4Z8wqc5K8Vr4xExZDtiw&usqp=CAU",
           preview: true,
           createdAt: Sequelize.literal("CURRENT_TIMESTAMP"),
           updatedAt: Sequelize.literal("CURRENT_TIMESTAMP"),

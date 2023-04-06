@@ -3,7 +3,7 @@ import "./spotCard.css";
 const SpotCard = ({ spot }) => {
   const rating = parseFloat(spot.avgRating).toFixed(2);
   return (
-    <div className="card">
+    <div className="card" title={spot.name}>
       <img className="cardImage" src={spot.previewImage} alt="spot" />
       <div className="spotInfoDiv">
         <p className="tile-name">

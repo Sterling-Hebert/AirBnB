@@ -24,6 +24,10 @@ const SpotDetail = () => {
 
   return (
     <div className="page">
+      <h1>{spot?.name}</h1>
+      <p>
+        {spot?.city}, {spot?.state}, {spot?.country}
+      </p>
       <div className="imagesContainer">
         {spot?.SpotImages &&
           spot?.SpotImages.map((img, i) => {
@@ -31,41 +35,38 @@ const SpotDetail = () => {
           })}
       </div>
       <div className="description">
-        <p>Description: {spot?.description}</p>
-      </div>
-      <div className="infoBox">
-        <h1>{spot?.name}</h1>
         <h2>
           Hosted by {spot?.Owner?.firstName}
           {spot?.Owner?.lastName}
         </h2>
+        <p>Description: {spot?.description}</p>
+        <div className="infoBox">
+          <p>${spot?.price}/ Per Night</p>
+          {reviewCount === 0 ? (
+            <p>
+              <i className="fa-solid fa-star"></i> New
+            </p>
+          ) : (
+            <p>
+              <i className="fa-solid fa-star"></i> {rating} · {reviewCount}{" "}
+              {reviewCount > 1 ? "Reviews" : "Review"}
+            </p>
+          )}
 
-        <p>
-          {spot?.city}, {spot?.state}, {spot?.country}
-        </p>
-        <p>${spot?.price}/ Per Night</p>
-        {reviewCount === 0 ? (
-          <p>
-            <i className="fa-solid fa-star"></i> New
-          </p>
-        ) : (
-          <p>
-            <i className="fa-solid fa-star"></i> {rating} · {reviewCount}{" "}
-            {reviewCount > 1 ? "Reviews" : "Review"}
-          </p>
-        )}
-
-        <button onClick={reserveClick}>Reserve</button>
+          <button onClick={reserveClick}>Reserve</button>
+        </div>
       </div>
+
       <div className="reviewContainer">
-        {reviewCount === 0 ? (
+        {reviewCount == 0 ? (
           <p>
-            <h1>Reviews:</h1>
-            <i className="fa-solid fa-star"></i> New
+            {/* <h1>Reviews:</h1> */}
+            <h1>No Reviews!</h1>
+            {/* <i className="fa-solid fa-star"></i> New */}
           </p>
         ) : (
           <p>
-            <i className="fa-solid fa-star"></i> {rating} · {reviewCount}{" "}
+            <i className="fa-solid fa-star"></i> {rating} · {reviewCount}
             {reviewCount > 1 ? "Reviews" : "Review"}
           </p>
         )}

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchSpots } from "../../store/spots";
 import { Link } from "react-router-dom";
-import SpotCard from "../SpotCard";
+import SpotCard from "../SpotTile";
 
 const SpotsIndex = () => {
   const spots = useSelector((state) => state.spots);

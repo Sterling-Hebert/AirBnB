@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
 // import "./SignupForm.css";
+import { useHistory } from "react-router-dom";
 
 function SignupFormModal() {
   const dispatch = useDispatch();
@@ -14,11 +15,14 @@ function SignupFormModal() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState([]);
   const { closeModal } = useModal();
+  const history = useHistory();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (password === confirmPassword) {
       setErrors([]);
+      history.push("/");
       return dispatch(
         sessionActions.signup({
           email,
@@ -44,8 +48,8 @@ function SignupFormModal() {
     <div className="modal">
       <h1 className="form-header">Sign Up</h1>
       <form onSubmit={handleSubmit}>
-        <ul className="errors">
-          <li key={Object.keys(errors)}>{Object.values(errors)}</li>
+        <ul className="errors" key={Object.keys(errors)}>
+          {Object.values(errors)}
         </ul>
         <label className="form-label">
           Email

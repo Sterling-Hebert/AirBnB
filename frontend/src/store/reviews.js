@@ -1,10 +1,12 @@
 import { csrfFetch } from "./csrf";
 
+//loader
 const LOAD_SPOT_REVIEWS = "reviews/LOAD_SPOT_REVIEWS";
 const SUBMIT_REVIEW = "reviews/SUBMIT_REVIEW";
 const DELETE_REVIEW = "reviews/DELETE_REVIEW";
 
 // action handlers
+
 export const fetchSpotReviews = (spotId) => async (dispatch) => {
   const response = await csrfFetch(`/api/spots/${spotId}/reviews`);
 
@@ -13,6 +15,7 @@ export const fetchSpotReviews = (spotId) => async (dispatch) => {
     dispatch(loadSpotReviews(payload.Reviews));
   }
 };
+//ask blake
 export const postReview = (payload, spotId) => async (dispatch) => {
   const response = await csrfFetch(`/api/spots/${spotId}/reviews`, {
     method: "POST",
@@ -23,6 +26,7 @@ export const postReview = (payload, spotId) => async (dispatch) => {
   dispatch(submitReview(review));
   return review;
 };
+
 export const deleteReview = (revId) => async (dispatch) => {
   const response = await csrfFetch(`/api/reviews/${revId}`, {
     method: "DELETE",
