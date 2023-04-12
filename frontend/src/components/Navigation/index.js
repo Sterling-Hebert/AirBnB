@@ -27,14 +27,16 @@ function Navigation({ isLoaded }) {
   let sessionLinks;
   if (sessionUser) {
     sessionLinks = (
-      <div>
-        <button className="createSpotButton">
-          <Link to="/spots/new">Create a New Spot</Link>
-        </button>
+      <>
+        <li className="sticky">
+          <button className="createSpotButton">
+            <Link to="/spots/new">Create a New Spot</Link>
+          </button>
+        </li>
         <li>
           <ProfileButton user={sessionUser} />
         </li>
-      </div>
+      </>
     );
   } else {
     sessionLinks = (
@@ -57,12 +59,7 @@ function Navigation({ isLoaded }) {
 
   return (
     <div className="navBarHeader">
-      <NavLink
-        exact
-        to="/"
-        className="Icon"
-        // handleClick={closeModClick}
-      >
+      <NavLink exact to="/" className="Icon">
         <img src="https://res.cloudinary.com/duakjbyfi/image/upload/v1678545268/AirBnB%20Clone/logo_browser.psd_vhyhya.png" />
       </NavLink>
       <ul className="actualNav">

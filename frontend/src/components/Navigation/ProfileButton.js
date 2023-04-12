@@ -6,6 +6,8 @@ import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
 import { Link, Redirect, useHistory } from "react-router-dom";
 import "./Navigation.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -46,6 +48,8 @@ function ProfileButton({ user }) {
   return (
     <div className="drop">
       <button onClick={openMenu}>
+        <FontAwesomeIcon icon={faBars} />
+        <span> </span>
         <i className="fas fa-user-circle" />
       </button>
       <ul className={ulClassName} ref={ulRef}>
@@ -54,7 +58,9 @@ function ProfileButton({ user }) {
             <li>Hello, {user.firstName}</li>
             <li className="borderBottom">{user.email}</li>
             <li className="borderBottom">
-              <Link to="/spots/current">Manage Spots</Link>
+              <button>
+                <Link to="/spots/current">Manage Spots</Link>
+              </button>
             </li>
             <li>
               <button onClick={logout}>Log Out</button>

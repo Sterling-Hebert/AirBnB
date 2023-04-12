@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import * as sessionActions from "../../store/session";
-// import "./SignupForm.css";
+import "./SignupForm.css";
 import { useHistory } from "react-router-dom";
 
 function SignupFormModal() {
@@ -16,6 +16,13 @@ function SignupFormModal() {
   const [errors, setErrors] = useState([]);
   const { closeModal } = useModal();
   const history = useHistory();
+
+  const isDisabled =
+    !email ||
+    password.length < 6 ||
+    username.length < 4 ||
+    !firstName ||
+    !lastName;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,7 +42,7 @@ function SignupFormModal() {
         .then(closeModal)
         .catch(async (res) => {
           const data = await res.json();
-          console.log(data.errors, "---------->");
+          console.log(data.errors);
           if (data && data.errors) setErrors(data.errors);
         });
     }
@@ -111,7 +118,7 @@ function SignupFormModal() {
             required
           />
         </label>
-        <button className="modal-button" type="submit">
+        <button className="modal-button" disabled={isDisabled} type="submit">
           Sign Up
         </button>
       </form>

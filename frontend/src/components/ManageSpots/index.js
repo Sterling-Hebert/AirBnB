@@ -23,7 +23,11 @@ const ManageSpotsIndex = () => {
 
   return (
     <div>
-      <h1>Manage Spots</h1>
+      <h1 className="manageHeading">Manage Spots</h1>
+
+      <button className="createSpotButton">
+        <Link to="/spots/new">Create a New Spot</Link>
+      </button>
       {!Object.values(spots) ? (
         <Link to="/spots/new">Create a New Spot</Link>
       ) : (
@@ -36,6 +40,7 @@ const ManageSpotsIndex = () => {
                 </Link>
                 <br />
                 <button
+                  className="button-left"
                   onClick={() => {
                     handleUpdate(spot.id);
                   }}
@@ -43,6 +48,7 @@ const ManageSpotsIndex = () => {
                   Update
                 </button>
                 <OpenModalButton
+                  className="button-right"
                   buttonText="Delete"
                   modalComponent={<ConfirmDeleteModal spotId={spot.id} />}
                 />

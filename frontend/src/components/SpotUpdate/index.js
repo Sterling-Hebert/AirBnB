@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { postSpot } from "../../store/spots";
-import "./SpotForm.css";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory, useParams } from "react-router-dom";
+import { fetchSpot, putSpot } from "../../store/spots";
+import "../SpotForm/SpotForm.css";
 
-const SpotForm = () => {
+const SpotUpdateForm = () => {
+  const { spotId } = useParams();
+  const spot = useSelector((state) => state.spots[spotId]);
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -19,11 +21,6 @@ const SpotForm = () => {
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [prevImg, setPrevImg] = useState("");
-  const [img1, setImg1] = useState("");
-  const [img2, setImg2] = useState("");
-  const [img3, setImg3] = useState("");
-  const [img4, setImg4] = useState("");
 
   const updateCountry = (e) => setCountry(e.target.value);
   const updateAddress = (e) => setAddress(e.target.value);
@@ -34,48 +31,45 @@ const SpotForm = () => {
   const updateDescription = (e) => setDescription(e.target.value);
   const updateName = (e) => setName(e.target.value);
   const updatePrice = (e) => setPrice(e.target.value);
-  const updatePrevImg = (e) => setPrevImg(e.target.value);
-  const updateImg1 = (e) => setImg1(e.target.value);
-  const updateImg2 = (e) => setImg2(e.target.value);
-  const updateImg3 = (e) => setImg3(e.target.value);
-  const updateImg4 = (e) => setImg4(e.target.value);
 
   useEffect(() => {
     const errors = [];
-    if (!country.length) errors.push(" Country is required");
-    if (!address.length) errors.push(" Address is required");
-    if (!city.length) errors.push(" City is required");
-    if (!state.length) errors.push(" State is required");
-    if (!Number(lat)) errors.push(" Latitude is required to be a number");
-    if (!Number(lng)) errors.push(" Longitude is required to be a number");
-    if (!description.length || description.length <= 29)
-      errors.push(" Description is required to be 30 characters");
-    if (!name.length) errors.push(" Name is required");
-    if (!Number(price)) errors.push(" Price is required to be a number");
-    if (!prevImg.length) errors.push(" Preview Image is required");
+    if (!country?.length) errors.push("Country is required");
+    if (!address?.length) errors.push("Address is required");
+    if (!city?.length) errors.push("City is required");
+    if (!state?.length) errors.push("State is required");
+    if (!Number(lat)) errors.push("Latitude is required");
+    if (!Number(lng)) errors.push("Longitude is required");
+    if (!description?.length) errors.push("Description is required");
+    if (!name?.length) errors.push("Name is required");
+    if (!Number(price)) errors.push("Price is required");
     setValidationErrors(errors);
-  }, [
-    country,
-    city,
-    address,
-    state,
-    lat,
-    lng,
-    description,
-    name,
-    price,
-    prevImg,
-  ]);
+  }, [country, city, address, state, lat, lng, description, name, price]);
+
+  useEffect(() => {
+    dispatch(fetchSpot(spotId));
+  }, [dispatch]);
+
+  useEffect(() => {
+    setCountry(spot?.country);
+    setAddress(spot?.address);
+    setCity(spot?.city);
+    setState(spot?.state);
+    setLat(spot?.lat);
+    setLng(spot?.lng);
+    setDescription(spot?.description);
+    setName(spot?.name);
+    setPrice(spot?.price);
+  }, [spot]);
 
   const handleSubmit = async (e) => {
-    setHasSubmitted(true);
     e.preventDefault();
 
-    // if (validationErrors.length) return alert([...validationErrors]);
-
-    const imagesArr = [prevImg, img1, img2, img3, img4];
+    setHasSubmitted(true);
+    if (validationErrors.length) return alert("Cannot Submit");
 
     const payload = {
+      id: spotId,
       country,
       address,
       city,
@@ -85,42 +79,34 @@ const SpotForm = () => {
       description,
       name,
       price,
-      imagesArr,
     };
 
-    let createdSpot = await dispatch(postSpot(payload));
+    let updatedSpot = await dispatch(putSpot(payload));
     setAddress("");
     setCity("");
     setCountry("");
     setDescription("");
-    setImg1("");
-    setImg2("");
-    setImg3("");
-    setImg4("");
     setLat("");
     setLng("");
     setName("");
-    setPrevImg("");
     setPrice("");
     setHasSubmitted(false);
-    if (createdSpot) {
-      history.push(`/spots/${createdSpot.id}`);
+    if (updatedSpot) {
+      history.push(`/spots/${updatedSpot.id}`);
     }
   };
 
   return (
     <div className="form">
-      <form onSubmit={handleSubmit} noValidate>
-        <br />
-        <h1 className="form">Create a New Spot</h1>
-        <br />
+      <form onSubmit={handleSubmit}>
+        <h1 className="form">Update Your Spot</h1>
         <h2 className="form">Where's your place located?</h2>
         <p>
           Guests will only get your exact address once they booked a
           reservation.
         </p>
         <label htmlFor="Country">Country</label>
-        {hasSubmitted && country.length < 1 && (
+        {hasSubmitted && !country && (
           <label htmlFor="Country" className="field-error">
             Country is required
           </label>
@@ -220,7 +206,6 @@ const SpotForm = () => {
         </p>
         <textarea
           className="desc"
-          type="text"
           name="Description"
           placeholder="Please write at least 30 characters"
           required={true}
@@ -257,7 +242,7 @@ const SpotForm = () => {
           Competitive pricing can help your listing stand out and rank higher in
           search results.
         </p>
-        ${" "}
+        $
         <input
           className="price"
           type="text"
@@ -269,60 +254,15 @@ const SpotForm = () => {
         />
         {hasSubmitted && !price && (
           <label htmlFor="Price" className="field-error">
-            Valid Price is required
+            Price is required
           </label>
         )}
-        <h2>Liven up your spot with photos</h2>
-        <p>Submit a link to at least one photo to publish your spot.</p>
-        <input
-          className="full"
-          type="url"
-          name="Preview Img"
-          placeholder="Preview Image URL"
-          required={true}
-          value={prevImg}
-          onChange={updatePrevImg}
-        />
-        {hasSubmitted && !prevImg && (
-          <label htmlFor="Preview Img" className="field-error">
-            Preview image is required
-          </label>
-        )}
-        <input
-          className="full"
-          type="url"
-          placeholder="Image URL"
-          value={img1}
-          onChange={updateImg1}
-        />
-        <input
-          className="full"
-          type="url"
-          placeholder="Image URL"
-          value={img2}
-          onChange={updateImg2}
-        />
-        <input
-          className="full"
-          type="url"
-          placeholder="Image URL"
-          value={img3}
-          onChange={updateImg3}
-        />
-        <input
-          className="full"
-          type="url"
-          placeholder="Image URL"
-          value={img4}
-          onChange={updateImg4}
-        />
-        <br />
         <button className="createButton" type="submit">
-          Create Spot
+          Update Your Spot
         </button>
       </form>
     </div>
   );
 };
 
-export default SpotForm;
+export default SpotUpdateForm;

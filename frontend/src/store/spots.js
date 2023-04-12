@@ -152,7 +152,12 @@ export const spotsReducer = (state = initialState, action) => {
     case DELETE_SPOT:
       const newState = { ...state };
       delete newState[action.spot.id];
-      return newState;
+      return { ...newState };
+    // return {
+    //   ...state,
+    //   spots: state.spots.filter((spot) => spot.id !== action.payload.id),
+    // };
+
     case ADD_IMAGES:
       return { ...state, [action.image.id]: { ...state[action.image.id] } };
     default:

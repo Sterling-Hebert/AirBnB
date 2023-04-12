@@ -58,11 +58,12 @@ function PostReviewModal({ spotId }) {
           className="review-body"
           type="text"
           name="review"
-          placeholder="Leave your review here"
+          placeholder="Leave your review here..."
           required={true}
           value={review}
           onChange={updateReview}
         />
+        <label>Stars:</label>
         <i
           onClick={(e) => {
             handleStar(e, 1);

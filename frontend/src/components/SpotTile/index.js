@@ -1,7 +1,7 @@
 import "./spotCard.css";
 
 const SpotCard = ({ spot }) => {
-  const rating = parseFloat(spot.avgRating).toFixed(2);
+  const rating = parseFloat(spot.avgRating).toFixed(1);
   return (
     <div className="card" title={spot.name}>
       <img className="cardImage" src={spot.previewImage} alt="spot" />
@@ -15,11 +15,11 @@ const SpotCard = ({ spot }) => {
       <div className="spotRating">
         {parseFloat(spot.avgRating) === 0 ? (
           <p>
-            <i className="fa-solid fa-star"></i> New
+            <span>&#11088;</span> New
           </p>
         ) : (
           <p>
-            <i className="fa-solid fa-star"></i> {rating}
+            <span>&#11088;</span> {rating}
           </p>
         )}
       </div>

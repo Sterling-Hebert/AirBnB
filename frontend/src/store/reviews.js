@@ -9,11 +9,15 @@ const DELETE_REVIEW = "reviews/DELETE_REVIEW";
 
 export const fetchSpotReviews = (spotId) => async (dispatch) => {
   const response = await csrfFetch(`/api/spots/${spotId}/reviews`);
-
   if (response.ok) {
     const payload = await response.json();
-    dispatch(loadSpotReviews(payload.Reviews));
+    console.log(payload);
+    dispatch(loadSpotReviews(payload));
   }
+  // const response = await fetch(`/api/spots/${spotId}/reviews`);
+  // const data = await response.json();
+  // console.log(data);
+  // dispatch(loadSpotReviews({ spotId: spotId, reviews: data.review }));
 };
 //ask blake
 export const postReview = (payload, spotId) => async (dispatch) => {
@@ -42,6 +46,9 @@ export const deleteReview = (revId) => async (dispatch) => {
 export const loadSpotReviews = (reviews) => ({
   type: LOAD_SPOT_REVIEWS,
   reviews,
+  // payload: {
+  //   reviews,
+  // },
 });
 export const submitReview = (review) => ({
   type: SUBMIT_REVIEW,
@@ -63,6 +70,7 @@ export const reviewsReducer = (state = initialState, action) => {
         allReviews[review.id] = review;
       });
       return allReviews;
+
     case SUBMIT_REVIEW:
       return { ...state, [action.review.id]: action.review };
     case DELETE_REVIEW:

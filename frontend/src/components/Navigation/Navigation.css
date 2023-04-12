@@ -14,6 +14,7 @@
   z-index: 1;
   bottom: 5px;
   border-bottom: 1px solid black;
+
 }
 .actualNav {
   position: fixed;
@@ -24,17 +25,23 @@
 ul.actualNav > li {
   display: inline-block;
   margin: 0px 3px
+
 }
+
 .profile-dropdown {
+  text-align: center;
   background-color: white;
   padding: 10px;
   border-radius: 2px;
   list-style-type: none;
   border: 2px solid #939b9b;
   border-radius: 12px;
+  margin-top:15px;
 }
 .borderBottom{
-  padding-top: 5px;
-border-bottom: 2px solid black;
-width: 60%
+padding-top: 10px;
+padding-bottom: 10px;
+margin-bottom: 10px;
+border-bottom: 2px solid crimson;
+width: 100%
 }
