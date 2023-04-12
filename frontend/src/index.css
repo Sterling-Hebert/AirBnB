@@ -10,7 +10,7 @@ a:hover {
   color: lightgray;
 }
 button {
-
+  position: relative;
   display: inline-block;
   outline: none;
   cursor: pointer;

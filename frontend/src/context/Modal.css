@@ -25,5 +25,5 @@
     position: absolute;
     background-color:white;
     background: rgb(169,169,169);
-background: linear-gradient(90deg, rgba(169,169,169,1) 19%, rgba(255,90,95,1) 81%);
+background: radial-gradient(circle, rgba(238,174,202,1) 5%, rgba(157,186,230,1) 90%, rgba(148,187,233,1) 100%);
   }

@@ -25,16 +25,15 @@ function Navigation({ isLoaded }) {
   if (sessionUser) {
     sessionLinks = (
       <>
-        <li>
+        <li className="moveleft">
           <DarkMode />
         </li>
-        <li className="sticky">
-          <button className="createSpotButton">
-            <Link to="/spots/new">Create A Spot</Link>
-          </button>
-        </li>
+        <button className="createSpotButton">
+          <Link to="/spots/new">Create A Spot</Link>
+        </button>
+
         <li>
-          <ProfileButton user={sessionUser} />
+          <ProfileButton className="sticky" user={sessionUser} />
         </li>
       </>
     );
