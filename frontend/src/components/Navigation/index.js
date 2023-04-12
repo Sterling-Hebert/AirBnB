@@ -1,17 +1,17 @@
 import React from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-// import { useModal } from "../../context/Modal";
 import ProfileButton from "./ProfileButton";
 import OpenModalButton from "../OpenModalButton";
 import LoginFormModal from "../LoginFormModal";
 import SignupFormModal from "../SignupFormModal";
 import * as sessionActions from "../../store/session";
 import "./Navigation.css";
+import logoImage from "./images/airbnb-2-logo-black-and-white.png";
+import DarkMode from "../DarkMode";
 
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
-  // const { closeModal } = useModal();
 
   const dispatch = useDispatch();
   const handleDemo = (e) => {
@@ -20,17 +20,17 @@ function Navigation({ isLoaded }) {
       sessionActions.login({ credential: "Demo-lition", password: "password" })
     );
   };
-  // const closeModClick = (e) => {
-  //   e.preventDefault().then(dispatch(closeModal()));
-  // };
 
   let sessionLinks;
   if (sessionUser) {
     sessionLinks = (
       <>
+        <li>
+          <DarkMode />
+        </li>
         <li className="sticky">
           <button className="createSpotButton">
-            <Link to="/spots/new">Create a New Spot</Link>
+            <Link to="/spots/new">Create A Spot</Link>
           </button>
         </li>
         <li>
@@ -41,6 +41,9 @@ function Navigation({ isLoaded }) {
   } else {
     sessionLinks = (
       <>
+        <li>
+          <DarkMode />
+        </li>
         <li>
           <OpenModalButton
             buttonText="Log In"
@@ -60,8 +63,9 @@ function Navigation({ isLoaded }) {
   return (
     <div className="navBarHeader">
       <NavLink exact to="/" className="Icon">
-        <img src="https://res.cloudinary.com/duakjbyfi/image/upload/v1678545268/AirBnB%20Clone/logo_browser.psd_vhyhya.png" />
+        <img className="Icon" src={logoImage} />
       </NavLink>
+
       <ul className="actualNav">
         {isLoaded && sessionLinks}
         {!sessionUser ? (

@@ -19,20 +19,22 @@ function App() {
 
   return (
     <>
-      <Navigation isLoaded={isLoaded} />
-      {isLoaded && (
-        <Switch>
-          <Route exact path="/" component={SpotsIndex} />
-          <Route path={`/spots/new`} component={SpotForm} />
-          <Route path={"/spots/current"} component={ManageSpotsIndex} />
-          <Route
-            exact
-            path={`/spots/:spotId/edit`}
-            component={SpotUpdateForm}
-          />
-          <Route path={`/spots/:spotId`} component={SpotDetail} />
-        </Switch>
-      )}
+      <div className="App">
+        <Navigation isLoaded={isLoaded} />
+        {isLoaded && (
+          <Switch>
+            <Route exact path="/" component={SpotsIndex} />
+            <Route path={`/spots/new`} component={SpotForm} />
+            <Route path={"/spots/current"} component={ManageSpotsIndex} />
+            <Route
+              exact
+              path={`/spots/:spotId/edit`}
+              component={SpotUpdateForm}
+            />
+            <Route path={`/spots/:spotId`} component={SpotDetail} />
+          </Switch>
+        )}
+      </div>
     </>
   );
 }
