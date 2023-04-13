@@ -25,7 +25,7 @@ const ManageSpotsIndex = () => {
     <div>
       <h1 className="manageHeading">Manage Spots</h1>
 
-      <button className="createSpotButton">
+      <button className="createSpotButtonNav">
         <Link to="/spots/new">Create a New Spot</Link>
       </button>
       {!Object.values(spots) ? (

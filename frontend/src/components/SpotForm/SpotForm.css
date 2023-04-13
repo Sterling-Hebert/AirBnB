@@ -13,15 +13,14 @@ label {
 }
 
 input.full {
-    width: 100%;
-}
+    width:93.8%}
 
 input.price {
-    width:95.8%
+    width:93.8%
 }
 
 textarea.desc {
-    width: 100%;
+    width:93.8%;
     height: 100px
 }
 
@@ -34,4 +33,7 @@ textarea.desc {
         display: block;
         margin: 0px auto;
         margin-top: 10px;
+}
+.borderBottom{
+    border-bottom: 2px 1px gray;
 }

@@ -13,48 +13,44 @@ import DarkMode from "../DarkMode";
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector((state) => state.session.user);
 
-  const dispatch = useDispatch();
-  const handleDemo = (e) => {
-    e.preventDefault();
-    return dispatch(
-      sessionActions.login({ credential: "Demo-lition", password: "password" })
-    );
-  };
-
   let sessionLinks;
   if (sessionUser) {
     sessionLinks = (
-      <>
-        <li className="moveleft">
-          <DarkMode />
-        </li>
-        <button className="createSpotButton">
-          <Link to="/spots/new">Create A Spot</Link>
-        </button>
+      <div className="loggedoutNavIndo">
+        <>
+          <li>
+            <DarkMode />
+          </li>
+          <button>
+            <Link to="/spots/new">Create A Spot</Link>
+          </button>
 
-        <li>
-          <ProfileButton className="sticky" user={sessionUser} />
-        </li>
-      </>
+          <li>
+            <ProfileButton user={sessionUser} />
+          </li>
+        </>
+      </div>
     );
   } else {
     sessionLinks = (
       <>
-        <li>
-          <DarkMode />
-        </li>
-        <li>
-          <OpenModalButton
-            buttonText="Log In"
-            modalComponent={<LoginFormModal />}
-          />
-        </li>
-        <li>
-          <OpenModalButton
-            buttonText="Sign Up"
-            modalComponent={<SignupFormModal />}
-          />
-        </li>
+        <div className="loggedoutNavIndo">
+          <li>
+            <DarkMode />
+          </li>
+          <li>
+            <OpenModalButton
+              buttonText="Log In"
+              modalComponent={<LoginFormModal />}
+            />
+          </li>
+          <li>
+            <OpenModalButton
+              buttonText="Sign Up"
+              modalComponent={<SignupFormModal />}
+            />
+          </li>
+        </div>
       </>
     );
   }
@@ -67,13 +63,7 @@ function Navigation({ isLoaded }) {
 
       <ul className="actualNav">
         {isLoaded && sessionLinks}
-        {!sessionUser ? (
-          <li>
-            <button onClick={handleDemo}>Demo Login</button>
-          </li>
-        ) : (
-          <></>
-        )}
+        {!sessionUser ? <li></li> : <></>}
       </ul>
     </div>
   );

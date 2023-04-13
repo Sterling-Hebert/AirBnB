@@ -11,6 +11,13 @@ function LoginFormModal() {
   const [errors, setErrors] = useState([]);
   const { closeModal } = useModal();
 
+  const handleDemo = (e) => {
+    e.preventDefault();
+    return dispatch(
+      sessionActions.login({ credential: "Demo-lition", password: "password" })
+    ).then(closeModal);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors([]);
@@ -26,7 +33,7 @@ function LoginFormModal() {
     <div className="modal">
       <h1 className="loginField">Log In</h1>
       <form onSubmit={handleSubmit}>
-        <ul>
+        <ul className="errorsList">
           {errors.map((error, idx) => (
             <li key={idx}>{error}</li>
           ))}
@@ -57,6 +64,9 @@ function LoginFormModal() {
           disabled={credential.length < 4 || password.length < 6}
         >
           Log In
+        </button>
+        <button className="demoLoginButton" onClick={handleDemo}>
+          Demo Login
         </button>
       </form>
     </div>

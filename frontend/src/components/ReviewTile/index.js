@@ -39,7 +39,7 @@ const ReviewTile = ({ rev }) => {
           <br />
           {rev.review}
           <br />
-          {rev.stars} <span>&#11088;</span>
+          {/* {rev.stars} <span>&#11088;</span> */}
         </p>
       ) : (
         <p>
@@ -49,7 +49,7 @@ const ReviewTile = ({ rev }) => {
           <br />
           {rev.review}
           <br />
-          {rev.stars} <span>&#11088;</span>
+          {/* {rev.stars} <span>&#11088;</span> */}
         </p>
       )}
     </div>

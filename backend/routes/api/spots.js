@@ -398,7 +398,7 @@ router.post("/:id/reviews", requireAuth, reviewValidation, async (req, res) => {
       userId: req.user.id,
       spotId: spot.id,
       review: review,
-      stars: stars,
+      stars,
     });
     return res.json(newReview);
   }

@@ -199,6 +199,7 @@ const SpotUpdateForm = () => {
           value={lng}
           onChange={updateLng}
         />
+        <div className="borderBottom"></div>
         <h2>Describe your place to guests</h2>
         <p>
           Mention the best features of your space, any special amentities like
@@ -218,6 +219,7 @@ const SpotUpdateForm = () => {
             Description needs a minimum of 30 characters
           </label>
         )}
+        <div className="borderBottom"></div>
         <h2>Create a title for your spot</h2>
         <p>
           Catch guests' attention with a spot title that highlights what makes
@@ -237,6 +239,7 @@ const SpotUpdateForm = () => {
             Name is required
           </label>
         )}
+        <div className="borderBottom"></div>
         <h2>Set a base price for your spot</h2>
         <p>
           Competitive pricing can help your listing stand out and rank higher in
@@ -257,6 +260,7 @@ const SpotUpdateForm = () => {
             Price is required
           </label>
         )}
+        <div className="borderBottom"></div>
         <button className="createButton" type="submit">
           Update Your Spot
         </button>
