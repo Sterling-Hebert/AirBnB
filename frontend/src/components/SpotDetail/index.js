@@ -19,6 +19,7 @@ const SpotDetail = () => {
   };
 
   useEffect(() => {
+    // window.location.reload();
     dispatch(fetchSpot(spotId));
   }, [dispatch]);
 
@@ -57,7 +58,7 @@ const SpotDetail = () => {
       </div>
 
       <div className="reviewContainer">
-        {reviewCount == 0 ? (
+        {reviewCount === 0 ? (
           <p>
             {/* <h1>Reviews:</h1> */}
             <h1>No Reviews!</h1>

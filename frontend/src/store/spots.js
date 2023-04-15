@@ -37,6 +37,7 @@ export const fetchUserSpots = () => async (dispatch) => {
   }
 };
 export const postSpot = (payload) => async (dispatch) => {
+  //object of arrays format
   let { imagesArr } = payload;
   imagesArr = imagesArr.map((url, i) => {
     let obj = {};
@@ -50,6 +51,7 @@ export const postSpot = (payload) => async (dispatch) => {
     return obj;
   });
 
+  //send to server
   const response = await csrfFetch(`/api/spots`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

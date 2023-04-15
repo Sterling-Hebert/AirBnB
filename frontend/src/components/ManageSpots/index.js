@@ -13,14 +13,13 @@ const ManageSpotsIndex = () => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  useEffect(() => {
-    dispatch(fetchUserSpots());
-  }, [dispatch]);
-
   const handleUpdate = (spotId) => {
     history.push(`/spots/${spotId}/edit`);
   };
 
+  useEffect(() => {
+    dispatch(fetchUserSpots());
+  }, [dispatch]);
   return (
     <div>
       <h1 className="manageHeading">Manage Spots</h1>

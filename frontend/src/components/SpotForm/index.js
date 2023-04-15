@@ -231,7 +231,8 @@ const SpotForm = () => {
         />
         {hasSubmitted && description.length < 30 && (
           <label htmlFor="Description" className="field-error">
-            Description needs a minimum of 30 characters
+            Description needs a minimum of 30 characters and less than 255
+            characters
           </label>
         )}
         <div className="borderBottom"></div>
