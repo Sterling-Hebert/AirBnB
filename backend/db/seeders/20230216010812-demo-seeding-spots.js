@@ -73,7 +73,7 @@ module.exports = {
           lng: 32,
           name: "Stunning Modern Home- Studio City-Views",
           description:
-            "Brand new spacious (4872 sqft) modern home with incredible views of the mountains & Los Angeles valley. Furnished w/very high end furnishings from LA, and features high ceilings, big windows, multiple decks, an office, a movie/family room, a hot tub, & an exercise room w/two Peleton bikes.",
+            "Brand new spacious (4872 sqft) modern home with incredible views of the mountains & Los Angeles valley. Furnished w/very high end furnishings from LA.",
           price: 500,
         },
         {
@@ -125,7 +125,7 @@ module.exports = {
           lng: 32,
           name: "The Ark",
           description:
-            "Welcome to Kelly’s Jubilee.  Look us up online for a discount and more information on our romantic and birthday packages.  The ark was featured in Southern Living magazine.",
+            "Welcome to Kelly's Jubilee.  Look us up online for a discount and more information on our romantic and birthday packages.  The ark was featured in Southern Living magazine.",
           price: 110,
         },
         {
