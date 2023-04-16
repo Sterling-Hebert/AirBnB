@@ -55,7 +55,7 @@ function SignupFormModal() {
     <div className="modal">
       <h1 className="form-header">Sign Up</h1>
       <form onSubmit={handleSubmit}>
-        <ul className="errors" key={Object.keys(errors)}>
+        <ul className="errorsSignup" key={Object.keys(errors)}>
           {Object.values(errors)}
         </ul>
         <label className="form-label">
