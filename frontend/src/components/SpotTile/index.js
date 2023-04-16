@@ -2,15 +2,10 @@ import "./spotCard.css";
 
 const SpotCard = ({ spot }) => {
   // const rating = parseFloat(spot.avgRating).toFixed(1);
+
   return (
     <div className="card" title={spot.name}>
-      {spot?.SpotImages[0] && (
-        <img
-          className="cardImage"
-          // key={spot?.SpotImages[0].img.id}
-          src={spot?.SpotImages[0].url}
-        />
-      )}
+      {spot && <img className="cardImage" src={spot.previewImage} />}
       {/* <img className="cardImage" src={spot.previewImage} alt="spot" /> */}
       <div className="spotInfoDiv">
         <p className="tile-name">

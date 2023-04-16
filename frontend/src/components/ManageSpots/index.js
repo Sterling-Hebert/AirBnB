@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { fetchUserSpots } from "../../store/spots";
 import { Link, useHistory } from "react-router-dom";
 import OpenModalButton from "../OpenModalButton";
@@ -11,6 +11,8 @@ const ManageSpotsIndex = () => {
   const spots = useSelector((state) => state.spots);
 
   const dispatch = useDispatch();
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const history = useHistory();
 
   const handleUpdate = (spotId) => {
@@ -18,45 +20,85 @@ const ManageSpotsIndex = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchUserSpots());
+    dispatch(fetchUserSpots()).then(() => setIsLoaded(true));
   }, [dispatch]);
   return (
-    <div>
-      <h1 className="manageHeading">Manage Spots</h1>
+    // <div>
+    //   <h1 className="manageHeading">Manage Spots</h1>
 
-      <button className="createSpotButtonNav">
-        <Link to="/spots/new">Create a New Spot</Link>
-      </button>
-      {!Object.values(spots) ? (
-        <Link to="/spots/new">Create a New Spot</Link>
-      ) : (
-        <ul>
-          <div className="rim">
-            {Object.values(spots).map((spot) => (
-              <div className="formatSpotContainer" key={spot.id}>
-                <Link to={`/spots/${spot.id}`} key={spot.id}>
-                  <SpotCard spot={spot} />
-                </Link>
-                <br />
-                <button
-                  className="button-left"
-                  onClick={() => {
-                    handleUpdate(spot.id);
-                  }}
-                >
-                  Update
-                </button>
-                <OpenModalButton
-                  className="button-right"
-                  buttonText="Delete"
-                  modalComponent={<ConfirmDeleteModal spotId={spot.id} />}
-                />
+    //   <button className="createSpotButtonNav">
+    //     <Link to="/spots/new">Create a New Spot</Link>
+    //   </button>
+    //   {!Object.values(spots) ? (
+    //     <Link to="/spots/new">Create a New Spot</Link>
+    //   ) : (
+    //     <ul>
+    //       <div className="rim">
+    //         {Object.values(spots).map((spot) => (
+    //           <div className="formatSpotContainer" key={spot.id}>
+    //             <Link to={`/spots/${spot.id}`} key={spot.id}>
+    //               <SpotCard spot={spot} />
+    //             </Link>
+    //             <br />
+    //             <button
+    //               className="button-left"
+    //               onClick={() => {
+    //                 handleUpdate(spot.id);
+    //               }}
+    //             >
+    //               Update
+    //             </button>
+    //             <OpenModalButton
+    //               className="button-right"
+    //               buttonText="Delete"
+    //               modalComponent={<ConfirmDeleteModal spotId={spot.id} />}
+    //             />
+    //           </div>
+    //         ))}
+    //       </div>
+    //     </ul>
+    //   )}
+    // </div>
+    <>
+      {isLoaded && (
+        <div>
+          <h1 className="manageHeading">Manage Spots</h1>
+
+          <button className="createSpotButtonNav">
+            <Link to="/spots/new">Create a New Spot</Link>
+          </button>
+          {!Object.values(spots) ? (
+            <Link to="/spots/new">Create a New Spot</Link>
+          ) : (
+            <ul>
+              <div className="rim">
+                {Object.values(spots).map((spot) => (
+                  <div className="formatSpotContainer" key={spot.id}>
+                    <Link to={`/spots/${spot.id}`} key={spot.id}>
+                      <SpotCard spot={spot} />
+                    </Link>
+                    <br />
+                    <button
+                      className="button-left"
+                      onClick={() => {
+                        handleUpdate(spot.id);
+                      }}
+                    >
+                      Update
+                    </button>
+                    <OpenModalButton
+                      className="button-right"
+                      buttonText="Delete"
+                      modalComponent={<ConfirmDeleteModal spotId={spot.id} />}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </ul>
+            </ul>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 };
 
