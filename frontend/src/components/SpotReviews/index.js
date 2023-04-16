@@ -34,7 +34,7 @@ const SpotReviews = () => {
       {spot?.ownerId !== user?.id && !alreadyReviewed && user && (
         <>
           <OpenModalButton
-            buttonText="Post a Review"
+            buttonText="Post Your Review"
             modalComponent={<PostReviewModal spotId={spotId} />}
           />
         </>
