@@ -209,18 +209,19 @@ const SpotForm = () => {
             Longitude is required
           </label>
         )}
-        <input
-          className="full"
-          type="text"
-          name="Longitude"
-          placeholder="Longitude"
-          required={true}
-          min="-180"
-          max="180"
-          value={lng}
-          onChange={updateLng}
-        />{" "}
-        <div className="borderBottom"></div>
+        <div className="borderBottom">
+          <input
+            className="full"
+            type="text"
+            name="Longitude"
+            placeholder="Longitude"
+            required={true}
+            min="-180"
+            max="180"
+            value={lng}
+            onChange={updateLng}
+          />{" "}
+        </div>
         <h2>Describe your place to guests</h2>
         <p>
           Mention the best features of your space, any special amentities like
