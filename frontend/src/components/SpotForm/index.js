@@ -40,6 +40,13 @@ const SpotForm = () => {
   const updateImg3 = (e) => setImg3(e.target.value);
   const updateImg4 = (e) => setImg4(e.target.value);
 
+  const validImageExtensions = ["png", "jpg", "jpeg"];
+
+  const urlCheck = (url) => {
+    const ending = url.split(".").pop().toLowerCase();
+    return validImageExtensions.includes(ending);
+  };
+
   useEffect(() => {
     const errors = [];
     if (!country.length) errors.push(" Country is required");
@@ -289,7 +296,7 @@ const SpotForm = () => {
         />
         {hasSubmitted && !prevImg && (
           <label htmlFor="Preview Img" className="field-error">
-            Preview image is required
+            Preview image is required and must end in .png, .jpg or jpeg.
           </label>
         )}
         <input
