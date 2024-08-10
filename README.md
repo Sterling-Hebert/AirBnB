@@ -13,7 +13,6 @@ This project is a clone of the popular vacation rental platform, Airbnb. The clo
 - **User Authentication**: Secure sign-up and login functionality.
 - **Property Listings**: Browse and search through a wide range of properties.
 - **Property Details**: Detailed view of each property, including images, descriptions, and amenities.
-- **Booking System**: Users can book properties for specific dates.
 - **Hosting**: Users can list their own properties for rent, including uploading images and descriptions.
 - **Reviews and Ratings**: Users can leave reviews and ratings for properties they have stayed at.
 
