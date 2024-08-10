@@ -1,6 +1,4 @@
-AirBnB Clone
 
-##
 
 This project is a clone of the popular vacation rental platform, Airbnb. The clone replicates key functionalities of the original site.
  Features
