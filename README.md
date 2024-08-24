@@ -1,6 +1,6 @@
 
 
-This project is a clone of the popular vacation rental platform, Airbnb. The clone replicates key functionalities of the original sit
+This project is a clone of the popular vacation rental platform, Airbnb. The clone replicates key functionalities of the original site.
 --- 
 
 - **User Authentication**: Secure sign-up and login functionality.
